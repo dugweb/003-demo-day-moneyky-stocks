@@ -24,9 +24,21 @@ DROP TABLE IF EXISTS `moneyky`.`spx_companies` ;
 
 CREATE TABLE IF NOT EXISTS `moneyky`.`spx_companies` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
-  `companyname` VARCHAR(75) NOT NULL COMMENT '',
   `ticker` VARCHAR(12) NULL COMMENT '',
+  `companyname` VARCHAR(75) NOT NULL COMMENT '',
   `sector` VARCHAR(45) NULL COMMENT '',
+  `price` INT NULL COMMENT '',
+  `dividend` INT NULL COMMENT '',
+  `price_earnings` INT NULL COMMENT '',
+  `earnings_share` INT NULL COMMENT '',
+  `book_value` INT NULL COMMENT '',
+  `year_low` INT NULL COMMENT '',
+  `year_high` INT NULL COMMENT '',
+  `market_cap` INT NULL COMMENT '',
+  `ebitda` INT NULL COMMENT '',
+  `price_sales` INT NULL COMMENT '',
+  `price_book` INT NULL COMMENT '',
+  `sec_filings` VARCHAR(255) COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 

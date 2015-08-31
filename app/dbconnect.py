@@ -1,13 +1,11 @@
-import pymysql.cursors
+import MySQLdb
 
 def connection():
-	conn = pymysql.connect(
-			host="localhost",
-			user="root",
+	conn = MySQLdb.connect(
+			host="127.0.0.1",
+			user="doug",
 			passwd="asdf",
 			db="moneyky",
-			charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
 		)
 
 	c = conn.cursor()

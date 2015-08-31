@@ -9,7 +9,6 @@ def hello():
 
 @app.route("/database")
 def database():
-
 	try:
 		c, conn = connection()
 		return "database page"
@@ -17,7 +16,9 @@ def database():
 		return (str(e))
 
 
-
+@app.route("/seeddb")
+def seeddb():
+	return "test"
 
 
 if __name__ == "__main__":

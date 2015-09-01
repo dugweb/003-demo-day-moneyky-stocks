@@ -23,11 +23,15 @@ class Database:
             pprint("query failed")
             self.connection.rollback()
     
-    def query(self, query):
+    def fetchall(self, query):
         cursor = self.connection.cursor( MySQLdb.cursors.DictCursor )
         cursor.execute(query)
-
         return cursor.fetchall()
+    
+    def fetchone(self, query):
+        cursor = self.connection.cursor( MySQLdb.cursors.DictCursor )
+        cursor.execute(query)
+        return cursor.fetchone()        
 
     def __del__(self):
         self.connection.close()

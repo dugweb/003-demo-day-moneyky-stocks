@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template, g, request
 from dbconnect import Database
 from readjson import readjson
 from pprint import pprint
+from dbactions import *
 
 
 app = Flask(__name__)
@@ -31,9 +32,14 @@ def database():
 			#pprint ((i,snp500_companies[i]['Symbol']))
 			moneykyDB.cursor.execute("""INSERT INTO snp(Symbol) VALUES(%s)""", (snp500_companies[i]['Symbol']))
 		moneykyDB.connection.commit()
-		return "SNP Table loaded and updated to moneykyDB"
+		pprint("SNP Table loaded and updated to moneykyDB")		
+		portfolio_of_today = chose_random_snp(moneykyDB)
+		portfolio_of_today.sort()
+		pprint(portfolio_of_today)
+		return render_template('database.html', portfolio_of_today=portfolio_of_today)
 	except Exception as e:
 		return (str(e))
+
 
 
 @app.route("/seeddb")

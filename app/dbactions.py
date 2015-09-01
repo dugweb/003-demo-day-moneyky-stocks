@@ -1,4 +1,4 @@
-from dbconnect import connection
+import dbconnect
 
 
 

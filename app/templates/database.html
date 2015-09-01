@@ -1,0 +1,8 @@
+<html>
+    <h1>This is the list of 10 Stocks chosen by our Monkey</h1>
+    <ul>
+        {% for stock in portfolio_of_today %}
+        <li>{{stock[0]}} {{stock[1]}}</li>
+        {% endfor %} 
+    </ul>
+</html>

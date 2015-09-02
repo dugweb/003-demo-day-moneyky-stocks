@@ -17,22 +17,20 @@ def database():
 		moneykyDB = Database("moneyky")
 		snp500_companies = readjson('../spx-companies.json')
 		#pprint (snp500_companies)
-		Cols = snp500_companies[0].keys()
-		Rows = snp500_companies[0].values()
-		#pprint (insertCols)
 
 		#Delete the table if it exists (#TODO :should be removed at production time)
-		query = """DROP TABLE IF EXISTS snp"""
+		query = """DROP TABLE IF EXISTS snp_table"""
 		moneykyDB.insert_commit(query)
-		query = """CREATE TABLE snp (id INT NOT NULL AUTO_INCREMENT,PRIMARY KEY(id), Symbol varchar(10) DEFAULT NULL);"""
+		query = """CREATE TABLE snp_table (id INT NOT NULL AUTO_INCREMENT,PRIMARY KEY(id), Symbol varchar(10) DEFAULT NULL,  Name varchar(100) DEFAULT NULL);"""
 		moneykyDB.insert_commit(query)
 
 		# Loop through the list and insert Symbol to the snp table
 		for i in range(0,len(snp500_companies)):
-			#pprint ((i,snp500_companies[i]['Symbol']))
-			moneykyDB.cursor.execute("""INSERT INTO snp(Symbol) VALUES(%s)""", (snp500_companies[i]['Symbol']))
+			row = [snp500_companies[i]['Symbol'], snp500_companies[i]['Name']]
+			#pprint ((i,snp500_companies[i]['Name']))
+			moneykyDB.cursor.execute("""INSERT INTO snp_table(Symbol, Name) VALUES(%s, %s)""", row)
 		moneykyDB.connection.commit()
-		pprint("SNP Table loaded and updated to moneykyDB")		
+		pprint("SNP Table loaded to moneykyDB")		
 		portfolio_of_today = chose_random_snp(moneykyDB)
 		portfolio_of_today.sort()
 		pprint(portfolio_of_today)

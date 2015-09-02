@@ -6,7 +6,7 @@ import MySQLdb
 
 
 def chose_random_snp(moneykyDB):
-    query = """SELECT count(*) from snp"""
+    query = """SELECT count(*) from snp_table"""
     moneykyDB.cursor.execute(query)
     answer =  moneykyDB.cursor.fetchone()
     num_rows = answer[0]
@@ -14,8 +14,7 @@ def chose_random_snp(moneykyDB):
     #pprint(num_rows)
     for i in range(1,10):
         portfolio_id=randint(0,num_rows)
-        query = ("""SELECT Symbol FROM snp WHERE id=%d""" , portfolio_id)
-        moneykyDB.cursor.execute("""SELECT Symbol FROM snp WHERE id=%s""" , portfolio_id)
+        moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE id=%s""" , portfolio_id)
         answer= portfolio_id, moneykyDB.cursor.fetchone()
         portfolio_of_today.append(answer)
     return portfolio_of_today

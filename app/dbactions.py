@@ -13,15 +13,15 @@ def chose_random_snp(moneykyDB):
     answer =  moneykyDB.cursor.fetchone()
     num_rows = answer[0]
     portfolio_of_today = []
-    #pprint(num_rows)
-    for i in range(1,10):
+    num_stocks_to_sample = 10
+    for i in range(0,num_stocks_to_sample):
         portfolio_id=randint(0,num_rows)  # Generate rand b/w 0 - 500
         moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE snp_id=%s""" , portfolio_id)
         d = moneykyDB.cursor.fetchone()
         answer= portfolio_id, d[0] , get_performance(d[0])
         pprint(answer)
         portfolio_of_today.append(answer)
-    portfolio_of_today.sort()        
+    portfolio_of_today.sort()
     return portfolio_of_today
 
 def get_performance(ticker):

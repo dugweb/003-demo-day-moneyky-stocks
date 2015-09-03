@@ -4,7 +4,6 @@ from readjson import readjson
 from pprint import pprint
 from dbactions import *
 
-
 app = Flask(__name__)
 @app.route("/")
 def hello():
@@ -57,11 +56,19 @@ def database():
         
     
         portfolio_of_today = chose_random_snp(moneykyDB)
+        
         pprint(portfolio_of_today)
+        snp_perf = get_performance('^GSPC') 
+
+        moneyky_perf = sum(moneyky_stock[2] for moneyky_stock in portfolio_of_today) / float(len(portfolio_of_today))
+        pprint("^^^^^^^^^^")
+        pprint(snp_perf) 
+        pprint(moneyky_perf) 
+        pprint("^^^^^^^^^^")
         for stock in portfolio_of_today: # snp_id:stock[0] , symbol: stock[1][0] , name: stock[1][1] , perf: stock[2]
             moneykyDB.cursor.execute("""INSERT INTO holdings_table (snp_id , Performance) VALUES(%s, %s)""", (stock[0] , stock[2]))
             moneykyDB.connection.commit()
-        return render_template('database.html', portfolio_of_today=portfolio_of_today)
+        return render_template('database.html', portfolio_of_today=portfolio_of_today, snp_perf=snp_perf , moneyky_perf=moneyky_perf)
     except Exception as e:
         return (str(e))
 

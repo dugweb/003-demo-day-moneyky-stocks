@@ -2,7 +2,7 @@
     <h1>This is the list of 10 Stocks with their performance chosen by our Monkey</h1>
     <ul>
         {% for stock in portfolio_of_today %}
-        <li>{{stock[0] , stock[1][0] , stock[1][1] , stock[2]}} <!-- {stock[0][1] stock[0][2]} --></li>
+        <li>{{stock[0] , stock[1] , stock[2]}} <!-- {stock[0][1] stock[0][2]} --></li>
         {% endfor %} 
     </ul>
 </html>

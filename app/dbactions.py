@@ -1,8 +1,10 @@
 import dbconnect
+import MySQLdb
 from pprint import pprint
 from random import randint
 from dbconnect import Database
-import MySQLdb
+from yahoo_finance import Share
+import datetime
 
 
 def chose_random_snp(moneykyDB):
@@ -13,14 +15,23 @@ def chose_random_snp(moneykyDB):
     portfolio_of_today = []
     #pprint(num_rows)
     for i in range(1,10):
-        portfolio_id=randint(0,num_rows)
+        portfolio_id=randint(0,num_rows)  # Generate rand b/w 0 - 500
         moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE snp_id=%s""" , portfolio_id)
-        answer= portfolio_id, moneykyDB.cursor.fetchone() , get_performance(portfolio_id)
+        d = moneykyDB.cursor.fetchone()
+        answer= portfolio_id, d[0] , get_performance(d[0])
+        pprint(answer)
         portfolio_of_today.append(answer)
+    portfolio_of_today.sort()        
     return portfolio_of_today
-    #pprint(num_rows)
 
-def get_performance(snp_id):
-    
-    return randint(0.0,1000.0)/100.0
-
+def get_performance(ticker):
+    today = datetime.date.today()
+    stock = Share(ticker)
+    prev_close= stock.get_prev_close()
+    close_price= stock.get_price()
+    change = stock.get_change()
+    diff = float(close_price) - float(prev_close)
+    perf_percent = diff * 100 / float(prev_close)
+    #pprint(perf_percent)
+    #pprint(change)
+    return perf_percent

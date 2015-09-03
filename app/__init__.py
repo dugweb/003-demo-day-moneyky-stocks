@@ -57,11 +57,8 @@ def database():
         
     
         portfolio_of_today = chose_random_snp(moneykyDB)
-        portfolio_of_today.sort()
         pprint(portfolio_of_today)
         for stock in portfolio_of_today: # snp_id:stock[0] , symbol: stock[1][0] , name: stock[1][1] , perf: stock[2]
-            pprint("----")
-            pprint(stock[2])
             moneykyDB.cursor.execute("""INSERT INTO holdings_table (snp_id , Performance) VALUES(%s, %s)""", (stock[0] , stock[2]))
             moneykyDB.connection.commit()
         return render_template('database.html', portfolio_of_today=portfolio_of_today)

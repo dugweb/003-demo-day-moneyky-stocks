@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `moneyky`.`spx_companies` ;
 
 CREATE TABLE IF NOT EXISTS `moneyky`.`spx_companies` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
-  `ticker` VARCHAR(12) NULL COMMENT '',
+  `ticker` VARCHAR(12) NOT NULL COMMENT '',
   `companyname` VARCHAR(75) NOT NULL COMMENT '',
   `sector` VARCHAR(45) NULL COMMENT '',
   `price` INT NULL COMMENT '',
@@ -44,11 +44,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `moneyky`.`portfolios`
+-- Table `moneyky`.`moneykyvsnp`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `moneyky`.`portfolios` ;
+DROP TABLE IF EXISTS `moneyky`.`moneykyvsnp` ;
 
-CREATE TABLE IF NOT EXISTS `moneyky`.`portfolios` (
+CREATE TABLE IF NOT EXISTS `moneyky`.`moneykyvsnp` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `date` DATE NULL COMMENT '',
   `performance` INT NULL COMMENT '',
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `moneyky`.`portfolio_holding` (
     ON UPDATE NO ACTION,
   CONSTRAINT `portfolio_id`
     FOREIGN KEY (`portfolio_id`)
-    REFERENCES `moneyky`.`portfolios` (`id`)
+    REFERENCES `moneyky`.`moneykyvsnp` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

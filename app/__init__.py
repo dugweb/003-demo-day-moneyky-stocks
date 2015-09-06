@@ -1,9 +1,6 @@
 from flask import Flask, render_template, g, request
 from dbconnect import Database
-from readjson import readjson
-from pprint import pprint
-from dbactions import *
-import moneyky
+from moneyky import Moneyky
 
 app = Flask(__name__)
 @app.route("/")
@@ -13,7 +10,8 @@ def hello():
 @app.route("/database")
 def database():
     try:
-        return render_template('database.html', moneyky, snp_perf=snp_perf , moneyky_perf=moneyky_perf)
+        moneyky_obj = Moneyky()
+        return render_template('database.html') #, moneyky, snp_perf=snp_perf , moneyky_perf=moneyky_perf)
     except Exception as e:
         return (str(e))
 

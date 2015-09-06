@@ -18,14 +18,14 @@ CREATE SCHEMA IF NOT EXISTS `moneyky` DEFAULT CHARACTER SET utf8 COLLATE utf8_ge
 USE `moneyky` ;
 
 -- -----------------------------------------------------
--- Table `moneyky`.`spx_companies`
+-- Table `moneyky`.`snp_table`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `moneyky`.`spx_companies` ;
+DROP TABLE IF EXISTS `moneyky`.`snp_table` ;
 
-CREATE TABLE IF NOT EXISTS `moneyky`.`spx_companies` (
+CREATE TABLE IF NOT EXISTS `moneyky`.`snp_table` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
-  `ticker` VARCHAR(12) NOT NULL COMMENT '',
-  `companyname` VARCHAR(75) NOT NULL COMMENT '',
+  `Symbol` VARCHAR(12) NOT NULL COMMENT '',
+  `Name` VARCHAR(75) NOT NULL COMMENT '',
   `sector` VARCHAR(45) NULL COMMENT '',
   `price` INT NULL COMMENT '',
   `dividend` INT NULL COMMENT '',
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `moneyky`.`portfolio_holding` (
   INDEX `portfolio_id_idx` (`portfolio_id` ASC)  COMMENT '',
   CONSTRAINT `company_id`
     FOREIGN KEY (`company_id`)
-    REFERENCES `moneyky`.`spx_companies` (`id`)
+    REFERENCES `moneyky`.`snp_table` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `portfolio_id`

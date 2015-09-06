@@ -3,7 +3,7 @@ from dbconnect import Database
 from readjson import readjson
 from pprint import pprint
 from dbactions import *
-from subprocess import Popen, PIPE
+from yahoo_finance import Share
 
 class Moneyky(object):
 
@@ -11,10 +11,10 @@ class Moneyky(object):
     def __init__(self):
 
         # Connect to the databasee
-        # if snp_companies table is empty then 
-        # seeddb()
         self.moneykyDB = Database('moneyky')
+        # if snp_companies table is empty then 
         self.seeddb()
+        self.portfolio_of_day()
 
     def seeddb(self):
         ''' runs once if there are no companies in the snp_companies file '''
@@ -39,7 +39,7 @@ class Moneyky(object):
 
     def portfolio_of_day(self):
         '''This function is the one that will run once per day - Important Function'''
-        # get random_portfolio(50)
+        self.random_portfolio(10)
         # get_ticker_performance('^GSPC') # snp performance
 
         # set_days_performance() 
@@ -49,36 +49,31 @@ class Moneyky(object):
 
 
 
-    def random_portfolio(self, holdings = 10):
-        ''' creates a list of holdings with their associated performance '''	    
-        # holdings = generate 50 random stocks and select them from spx_companies table
-        # (loop) get_ticker_performance()
-        
-
-
-        # query = """SELECT count(*) from snp_table"""
-        # moneykyDB.cursor.execute(query)
-        # answer =  moneykyDB.cursor.fetchone()
-        # num_rows = answer[0]
-        # portfolio_of_today = []
-        # num_stocks_to_sample = 10
-        # for i in range(0,num_stocks_to_sample):
-        #     portfolio_id=randint(0,num_rows)  # Generate rand b/w 0 - 500
-        #     moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE snp_id=%s""" , portfolio_id)
-        #     d = moneykyDB.cursor.fetchone()
-        #     answer= portfolio_id, d[0] , get_performance(d[0])
-        #     pprint(answer)
-        #     portfolio_of_today.append(answer)
-        # portfolio_of_today.sort()
-        # return portfolio_of_today
-        pass
-
+    def random_portfolio(self, num_holdings = 10):
+        ''' creates a list of holdings with their associated performance '''
+        query = """SELECT count(*) from snp_table"""
+    	self.moneykyDB.cursor.execute(query)
+    	answer =  self.moneykyDB.cursor.fetchone()
+    	num_rows = answer[0]
+    	portfolio_ids= []
+    	holdings= []
+    	pprint(num_rows)
+        for i in range(0,num_holdings):
+        	portfolio_id = randint(0,num_rows)  # Generate rand b/w 0 - 500
+        	self.moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE id=%s""" , portfolio_id)
+        	d = self.moneykyDB.cursor.fetchone()
+        	ticker = d[0]
+        	perf = self.get_ticker_performance(ticker)
+        	holdings.append((portfolio_id, ticker, perf))
+        holdings.sort()
+        pprint(holdings)
+        return holdings
 
     def get_ticker_performance(self, ticker):
         ''' helper function to get a single stock's performance from Yahoo Finance'''
         today = datetime.date.today()
     	stock = Share(ticker)
-    	pre_close= stock.get_prev_close()
+    	prev_close= stock.get_prev_close()
     	close_price= stock.get_price()
     	diff = float(close_price) - float(prev_close)
     	perf_percent = diff * 100 / float(prev_close)

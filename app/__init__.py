@@ -11,7 +11,7 @@ def hello():
 def database():
     try:
         moneyky_obj = Moneyky()
-        return render_template('database.html') #, moneyky, snp_perf=snp_perf , moneyky_perf=moneyky_perf)
+        return render_template('database.html', holdings=moneyky_obj.holdings, snp_perf=moneyky_obj.snp_perf, moneyky_perf=moneyky_obj.moneyky_perf)
     except Exception as e:
         return (str(e))
 

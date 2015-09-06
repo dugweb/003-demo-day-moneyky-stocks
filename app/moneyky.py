@@ -6,10 +6,11 @@ from dbactions import *
 from yahoo_finance import Share
 
 class Moneyky(object):
-
+    holdings=[]   # List of holdings for the day
+    snp_perf = 0
+    moneyky_perf = 0
 
     def __init__(self):
-
         # Connect to the databasee
         self.moneykyDB = Database('moneyky')
         # if snp_companies table is empty then 
@@ -20,13 +21,13 @@ class Moneyky(object):
         ''' runs once if there are no companies in the snp_companies file '''
         snp500_companies = readjson('../spx-companies.json')
         #pprint (snp500_companies)
-
+        
         query = "SELECT * FROM snp_table"
         self.moneykyDB.cursor.execute(query)
         result = self.moneykyDB.cursor.fetchone()
         if result:
             # there is a table named "tablename"
-        	pprint("snp table exists")
+            pprint("snp table exists")
         else:        	
             # Loop through the list and insert Symbol to the snp table
             pprint("Filling up the snp table")
@@ -34,14 +35,16 @@ class Moneyky(object):
                 row = [snp500_companies[i]['Symbol'], snp500_companies[i]['Name']]
                 pprint ((i,snp500_companies[i]['Name']))
                 self.moneykyDB.cursor.execute("""INSERT INTO snp_table(Symbol, Name) VALUES(%s, %s)""", row)
-            self.moneykyDB.connection.commit()
-            pprint("SNP Table loaded to moneykyDB") 
+        self.moneykyDB.connection.commit()
+        pprint("SNP Table loaded to moneykyDB") 
 
     def portfolio_of_day(self):
         '''This function is the one that will run once per day - Important Function'''
         self.random_portfolio(10)
-        # get_ticker_performance('^GSPC') # snp performance
-
+        pprint(self.holdings)
+        self.set_days_performance()
+        pprint(self.snp_perf )
+        pprint(self.moneyky_perf)
         # set_days_performance() 
         # set_portfolio(holdings) 
         pass
@@ -52,44 +55,45 @@ class Moneyky(object):
     def random_portfolio(self, num_holdings = 10):
         ''' creates a list of holdings with their associated performance '''
         query = """SELECT count(*) from snp_table"""
-    	self.moneykyDB.cursor.execute(query)
-    	answer =  self.moneykyDB.cursor.fetchone()
-    	num_rows = answer[0]
-    	portfolio_ids= []
-    	holdings= []
-    	pprint(num_rows)
+        self.moneykyDB.cursor.execute(query)
+        answer =  self.moneykyDB.cursor.fetchone()
+        num_rows = answer[0]
+        portfolio_ids= []
+        self.holdings= []
+
         for i in range(0,num_holdings):
-        	portfolio_id = randint(0,num_rows)  # Generate rand b/w 0 - 500
-        	self.moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE id=%s""" , portfolio_id)
-        	d = self.moneykyDB.cursor.fetchone()
-        	ticker = d[0]
-        	perf = self.get_ticker_performance(ticker)
-        	holdings.append((portfolio_id, ticker, perf))
-        holdings.sort()
-        pprint(holdings)
-        return holdings
+            portfolio_id = randint(0,num_rows)  # Generate rand b/w 0 - 500
+            self.moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE id=%s""" , portfolio_id)
+            d = self.moneykyDB.cursor.fetchone()
+            ticker = d[0]
+            perf = self.get_ticker_performance(ticker)
+            self.holdings.append((portfolio_id, ticker, perf))
+        self.holdings.sort()
+        return 
 
     def get_ticker_performance(self, ticker):
         ''' helper function to get a single stock's performance from Yahoo Finance'''
         today = datetime.date.today()
-    	stock = Share(ticker)
-    	prev_close= stock.get_prev_close()
-    	close_price= stock.get_price()
-    	diff = float(close_price) - float(prev_close)
-    	perf_percent = diff * 100 / float(prev_close)
-	    #pprint(perf_percent)
-    	return perf_percent
+        stock = Share(ticker)
+        prev_close= stock.get_prev_close()
+        close_price= stock.get_price()
+        diff = float(close_price) - float(prev_close)
+        perf_percent = diff * 100 / float(prev_close)
+        #pprint(perf_percent)
+        return perf_percent
 
     def get_days_performance(self, date = None):
         ''' return days performance'''
-        moneyky_perf = sum(moneyky_stock[2] for moneyky_stock in portfolio_of_today) / float(len(portfolio_of_today))
+        
 
 
     def set_days_performance(self):
         ''' calculate average of holdings to insert into moneyky vs snp'''
-        # insert holding into DB
-
-        pass
+        pprint("Length :")
+        pprint(len(self.holdings))
+        self.moneyky_perf = sum(moneyky_stock[2] for moneyky_stock in self.holdings) / float(len(self.holdings))
+        self.snp_perf = self.get_ticker_performance('^GSPC') 
+        return
 
     def set_portfolio_holdings(self, holdings = []):
         # moneyky_perf = sum(moneyky_stock[2] for moneyky_stock in portfolio_of_today) / float(len(portfolio_of_today))

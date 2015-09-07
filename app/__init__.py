@@ -1,21 +1,29 @@
 from flask import Flask, render_template, g, request
-from dbconnect import Database
-from readjson import readjson
-from pprint import pprint
-from dbactions import *
-import moneyky
+from moneyky import Moneyky
+
+
 
 app = Flask(__name__)
+moneyky = Moneyky()
+
 @app.route("/")
 def hello():
-    return "Moneyky, Hello World"
+	return render_template('index.html')
 
 @app.route("/database")
 def database():
-    try:
-        return render_template('database.html', moneyky, snp_perf=snp_perf , moneyky_perf=moneyky_perf)
-    except Exception as e:
-        return (str(e))
+	return render_template('database.html')
+	
+@app.route("/seed")
+def seed():
+	moneyky.seeddb()
+	return render_template('seed.html')
+
+@app.route('/random-portfolio')
+@app.route('/random-portfolio/<amount>')
+def random_portfolio(amount = 5):
+	portfolio, performance = moneyky.random_portfolio(amount)
+	return render_template('apicall.html', portfolio = portfolio, performance = performance)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+	app.run(debug=True)

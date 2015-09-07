@@ -51,6 +51,7 @@ DROP TABLE IF EXISTS `moneyky`.`moneykyvsnp` ;
 CREATE TABLE IF NOT EXISTS `moneyky`.`moneykyvsnp` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `date` DATE NULL COMMENT '',
+  `one_year_date` DATE NULL COMMENT '',
   `performance` INT NULL COMMENT '',
   `benchmark` INT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
@@ -66,7 +67,9 @@ CREATE TABLE IF NOT EXISTS `moneyky`.`portfolio_holding` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `company_id` INT UNSIGNED NULL COMMENT '',
   `portfolio_id` INT UNSIGNED NULL COMMENT '',
-  `performance_ytd` INT NULL COMMENT '',
+  `close` INT NULL COMMENT '',
+  `one_year_ago` INT NULL COMMENT '',
+  `year_start` INT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '',
   INDEX `company_id_idx` (`company_id` ASC)  COMMENT '',
   INDEX `portfolio_id_idx` (`portfolio_id` ASC)  COMMENT '',

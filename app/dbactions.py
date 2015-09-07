@@ -69,14 +69,14 @@ class MoneykyDB(object):
 
 		return result
 
-	def get_performance(ticker):
-		today = datetime.date.today()
-		stock = Share(ticker)
-		prev_close= stock.get_prev_close()
-		close_price= stock.get_price()
-		change = stock.get_change()
-		diff = float(close_price) - float(prev_close)
-		perf_percent = diff * 100 / float(prev_close)
-		#pprint(perf_percent)
-		#pprint(change)
-		return perf_percent
+	# def get_performance(ticker):
+	# 	today = datetime.date.today()
+	# 	stock = Share(ticker)
+	# 	prev_close= stock.get_prev_close()
+	# 	close_price= stock.get_price()
+	# 	change = stock.get_change()
+	# 	diff = float(close_price) - float(prev_close)
+	# 	perf_percent = diff * 100 / float(prev_close)
+	# 	#pprint(perf_percent)
+	# 	#pprint(change)
+	# 	return perf_percent

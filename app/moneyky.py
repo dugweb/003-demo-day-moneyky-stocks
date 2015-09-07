@@ -1,6 +1,6 @@
 
 from dbactions import MoneykyDB
-import datetime
+from datetime import datetime
 import requests
 import urllib
 import json
@@ -21,7 +21,6 @@ class Moneyky(object):
 
 	def seeddb(self):
 		''' runs once if there are no companies in the snp_companies file '''
-		
 		self.db.seed_companies("../spx-companies.json")
 
 
@@ -34,7 +33,7 @@ class Moneyky(object):
 
 		
 
-		return portfolio, performance
+		return portfolio
 		# get_ticker_performance('^GSPC') # snp performance
 
 		# set_days_performance() 
@@ -45,68 +44,59 @@ class Moneyky(object):
 		
 	def get_portfolio_performance(self, holdings = []):
 		''' creates a list of holdings with their associated performance (Data from http://dev.markitondemand.com) '''	    
-		urlbase = "http://dev.markitondemand.com/Api/v2/InteractiveChart/json?parameters="
-		
 
+		data = []
 		
-
 		for ticker in holdings:
-			parameters = {
-				   "Normalized":False,
-				   "NumberOfDays":365,
-				   "DataPeriod":"Day",
-				   "Elements":[  
-					  {  
-						 "Symbol":ticker,
-						 "Type":"price",
-						 "Params":[  
-							"c"
-						 ]
-					  }
-				   ]
-				}
-			url = urlbase	
-			url += urllib.quote_plus(json.dumps(parameters))
-			
+			data.append(self.get_ticker_performance(ticker[1]))
+		
 
-
-			# response = requests.get(urlbase, params=parameters)
-			data = open('../sample-historical-data.json', 'r')
-			response = json.load(data)
-			return response
-			
-
-
-		# holdings = generate 50 random stocks and select them from spx_companies table
-		# (loop) get_ticker_performance()
-		 
-
-
-		# query = """SELECT count(*) from snp_table"""
-		# moneykyDB.cursor.execute(query)
-		# answer =  moneykyDB.cursor.fetchone()
-		# num_rows = answer[0]
-		# portfolio_of_today = []
-		# num_stocks_to_sample = 10
-		# for i in range(0,num_stocks_to_sample):
-		#     portfolio_id=randint(0,num_rows)  # Generate rand b/w 0 - 500
-		#     moneykyDB.cursor.execute("""SELECT Symbol, Name FROM snp_table WHERE snp_id=%s""" , portfolio_id)
-		#     d = moneykyDB.cursor.fetchone()
-		#     answer= portfolio_id, d[0] , get_performance(d[0])
-		#     pprint(answer)
-		#     portfolio_of_today.append(answer)
-		# portfolio_of_today.sort()
-		# return portfolio_of_today
-		pass
+		return data
 
 
 	def get_ticker_performance(self, ticker):
 		''' helper function to get a single stock's performance from Yahoo Finance'''
-		pass
+		### Construct API Call ###
+		urlbase = "http://dev.markitondemand.com/Api/v2/InteractiveChart/json?parameters="
+		parameters = {
+			   "Normalized":False,
+			   "NumberOfDays":365,
+			   "DataPeriod":"Day",
+			   "Elements":[  
+				  {  
+					 "Symbol":ticker,
+					 "Type":"price",
+					 "Params":[  
+						"c"
+					 ]
+				  }
+			   ]
+			}
+		url = urlbase	
+		url += urllib.quote_plus(json.dumps(parameters))
+		
+		response = requests.get(url)
+		result = response.json()
+		
+		### For testing ###
+		# response = open('../sample-historical-data.json', 'r')
+		# result = json.load(response)
 
-	def get_days_performance(self, date = None):
-		''' return days performance'''
-		pass
+		prices = result['Elements'][0]['DataSeries']['close']['values']
+		ytdindex = self.find_index_of_ytd(result['Dates'])
+
+		return {	
+			'ticker'			: ticker,
+			'today'				: result['Dates'][-1],
+			'currentprice'		: prices[-1],
+			'1year'				: result['Dates'][0],
+			'1yearprice'		: prices[0],
+			'1yearperformance'	: self.percent_growth(prices[0], prices[-1]),
+			'ytd'				: result['Dates'][ytdindex],
+			'ytdprice'			: prices[ytdindex],
+			'ytdperformance'	: self.percent_growth(prices[ytdindex], prices[-1])
+		}
+
 
 	def set_days_performance(self):
 		''' calculate average of holdings to insert into moneyky vs snp'''
@@ -133,6 +123,26 @@ class Moneyky(object):
 		# Insert Holdings
 
 
-judist = Moneyky()
-r = judist.get_portfolio_performance(['AAPL'])
-print r
+	def find_index_of_ytd(self, dates = []):
+		'''The first day of trading isn't always January 1st, so this finds the index first day of trading'''
+		index = 0
+		count = 0
+		while not index:
+			try:
+				index = dates.index(str(datetime.now().year) + '-01-0%sT00:00:00' %count)
+			except ValueError:
+				count += 1
+				continue
+
+		return index
+
+	def percent_growth(self, originalprice = 0, currentprice = 0):
+		dif = currentprice - originalprice
+		return dif / originalprice
+
+
+# judist = Moneyky()
+# r = judist.get_portfolio_performance(['AAPL'])
+# print r
+
+

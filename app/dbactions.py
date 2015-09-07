@@ -51,7 +51,7 @@ class MoneykyDB(object):
 
 
 	def table_exists(self, tablename = ""):
-
+		'''Returns if a table with the supplied name exists'''
 		self.cursor.execute("SHOW TABLES LIKE %s", ("%" + tablename + "%"))
 		result = self.cursor.fetchone()
 		if result:
@@ -60,7 +60,7 @@ class MoneykyDB(object):
 		return False
 
 	def table_has_data(self, tablename = ""):
-
+		'''Tells you if the table has any data already in there'''
 		result = False
 
 		if self.table_exists(tablename):
@@ -68,15 +68,3 @@ class MoneykyDB(object):
 			result = self.cursor.rowcount
 
 		return result
-
-	# def get_performance(ticker):
-	# 	today = datetime.date.today()
-	# 	stock = Share(ticker)
-	# 	prev_close= stock.get_prev_close()
-	# 	close_price= stock.get_price()
-	# 	change = stock.get_change()
-	# 	diff = float(close_price) - float(prev_close)
-	# 	perf_percent = diff * 100 / float(prev_close)
-	# 	#pprint(perf_percent)
-	# 	#pprint(change)
-	# 	return perf_percent

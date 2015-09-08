@@ -160,7 +160,7 @@ class MoneykyDB(object):
 
 	def table_exists(self, tablename = ""):
 		'''Returns if a table with the supplied name exists'''
-		self.cursor.execute("SHOW TABLES LIKE %s", ("%" + tablename + "%"))
+		self.cursor.execute("SHOW TABLES LIKE %s", ("%" + tablename + "%",))
 		result = self.cursor.fetchone()
 		if result:
 			return True

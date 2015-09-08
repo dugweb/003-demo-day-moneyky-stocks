@@ -1,0 +1,130 @@
+@import "bootstrap/stylesheets/bootstrap/_normalize.scss";
+@import "bootstrap/stylesheets/bootstrap/_variables.scss";
+@import "bootstrap/stylesheets/bootstrap/_mixins.scss";
+
+$f_body: Helvetica, Arial, Sans-serif;
+$gutter: 20px;
+
+$c_body: #333;
+$c_link: #3F72D8;
+$c_linkhover: darken($c_link, 20%);
+
+$c_bg:#f1f1f1;
+$c_bglight: white;
+$c_bgdark: darken($c_bg, 10%);
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	background-color:$c_bg;
+}
+body {
+	color: $c_body;
+	font-family: $f_body;
+	font-size: 12px;
+
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	margin: 0;
+}
+
+h1 { font-size: 2.4em;  }
+h2 { font-size: 1.8em;   }
+h3 { font-size: 1.6em;   }
+h4 { font-size: 1.4em;   }
+h5 { font-size: 1.2em;   }
+h6 { font-size: 1.2em; text-transform: uppercase;   }
+
+a:link, a:visited {
+	color: $c_link;
+}
+a:hover, a:active {
+	color: $c_linkhover;
+}
+
+section {
+	overflow: auto;
+	max-width: 1024px;
+	margin: 0 auto;
+	padding: 1em 0;
+}
+
+header {
+	border-bottom: 1px solid $c_bgdark;
+	nav {
+		@include make_sm_column(8, $gutter);
+		overflow: auto;
+		ul {
+			padding: 0;
+			float: right;
+		}
+		li {
+			float: left;
+			list-style: none;
+			margin-right: 1em;
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+		a {
+			padding: .5em 1em;
+			border: 1px solid;
+			&:hover {
+				background-color: $c_bglight;
+			}
+		}
+	}
+	.logo {
+		@include make_sm_column(4, $gutter);
+	}
+
+	a {
+		text-decoration: none;
+		display: block;
+	}
+}
+
+article {
+	@include make_sm_column(8, $gutter);
+}
+article.half {
+	@include make_sm_column(6, $gutter);
+}
+aside {
+	@include make_sm_column(4, $gutter);
+}
+
+.main {
+	background-color: $c_bglight;
+}
+
+table {
+	width: 100%;
+	tr:nth-child(even) {
+		background-color: $c_bg;
+	}
+	tr:first-child {
+		border-bottom: 1px solid $c_bgdark;
+	}
+	tr:hover {
+		background-color: lighten($c_linkhover, 60%)
+	}
+	th {
+		text-align: left;
+		font-weight: normal;
+		font-size: 1.4em;
+	}
+	th, td {
+		padding: .5em;
+	}
+
+}
+
+
+footer {
+	border-top: 1px solid $c_bgdark;
+}

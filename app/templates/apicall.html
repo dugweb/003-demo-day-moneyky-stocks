@@ -1,0 +1,23 @@
+{% extends "parts/main_layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+	<article>
+		<table>
+		<tr>
+			<th>Ticker</th><th>Current Price</th><th>YTD Performance</th><th>1 Year Performance</th><th>Updated</th>
+		</tr>
+
+		{% for stock in performance %}
+		<tr>
+			<td>{{ stock['ticker'] }}</td><td>{{ stock['currentprice'] }}</td><td>{{ stock['ytdperformance'] }}%</td><td>{{ stock['1yearperformance'] }}%</td><td>{{ stock['today'] }}</td>
+		</tr>
+		{% endfor %}
+
+		</table>
+	</article>
+
+
+{% endblock %}

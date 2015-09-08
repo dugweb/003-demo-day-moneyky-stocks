@@ -24,35 +24,37 @@ DROP TABLE IF EXISTS `moneyky`.`spx_companies` ;
 
 CREATE TABLE IF NOT EXISTS `moneyky`.`spx_companies` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
-  `ticker` VARCHAR(12) NULL COMMENT '',
+  `ticker` VARCHAR(12) NOT NULL COMMENT '',
   `companyname` VARCHAR(75) NOT NULL COMMENT '',
   `sector` VARCHAR(45) NULL COMMENT '',
-  `price` INT NULL COMMENT '',
-  `dividend` INT NULL COMMENT '',
-  `price_earnings` INT NULL COMMENT '',
-  `earnings_share` INT NULL COMMENT '',
-  `book_value` INT NULL COMMENT '',
-  `year_low` INT NULL COMMENT '',
-  `year_high` INT NULL COMMENT '',
-  `market_cap` INT NULL COMMENT '',
-  `ebitda` INT NULL COMMENT '',
-  `price_sales` INT NULL COMMENT '',
-  `price_book` INT NULL COMMENT '',
+  `price` numeric(15,2) NULL COMMENT '',
+  `dividend` numeric(15,2) NULL COMMENT '',
+  `price_earnings` numeric(15,2) NULL COMMENT '',
+  `earnings_share` numeric(15,2) NULL COMMENT '',
+  `book_value` numeric(15,2) NULL COMMENT '',
+  `year_low` numeric(15,2) NULL COMMENT '',
+  `year_high` numeric(15,2) NULL COMMENT '',
+  `market_cap` numeric(15,2) NULL COMMENT '',
+  `ebitda` numeric(15,2) NULL COMMENT '',
+  `price_sales` numeric(15,2) NULL COMMENT '',
+  `price_book` numeric(15,2) NULL COMMENT '',
   `sec_filings` VARCHAR(255) COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `moneyky`.`portfolios`
+-- Table `moneyky`.`moneykyvsnp`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `moneyky`.`portfolios` ;
+DROP TABLE IF EXISTS `moneyky`.`moneykyvsnp` ;
 
-CREATE TABLE IF NOT EXISTS `moneyky`.`portfolios` (
+CREATE TABLE IF NOT EXISTS `moneyky`.`moneykyvsnp` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `date` DATE NULL COMMENT '',
-  `performance` INT NULL COMMENT '',
-  `benchmark` INT NULL COMMENT '',
+  `performance_ytd` numeric(15,2) NULL COMMENT '',
+  `performance_1year` numeric(15,2) NULL COMMENT '',
+  `benchmark_ytd` numeric(15,2) NULL COMMENT '',
+  `benchmark_1year` numeric(15,2) NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
@@ -66,7 +68,11 @@ CREATE TABLE IF NOT EXISTS `moneyky`.`portfolio_holding` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
   `company_id` INT UNSIGNED NULL COMMENT '',
   `portfolio_id` INT UNSIGNED NULL COMMENT '',
-  `performance_ytd` INT NULL COMMENT '',
+  `close` numeric(15,2) NULL COMMENT '',
+  `1yearprice` numeric(15,2) NULL COMMENT '',
+  `1yearperformance` numeric(15,2) NULL COMMENT '',
+  `ytdprice` numeric(15,2) NULL COMMENT '',
+  `ytdperformance` numeric(15,2) NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '',
   INDEX `company_id_idx` (`company_id` ASC)  COMMENT '',
   INDEX `portfolio_id_idx` (`portfolio_id` ASC)  COMMENT '',
@@ -77,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `moneyky`.`portfolio_holding` (
     ON UPDATE NO ACTION,
   CONSTRAINT `portfolio_id`
     FOREIGN KEY (`portfolio_id`)
-    REFERENCES `moneyky`.`portfolios` (`id`)
+    REFERENCES `moneyky`.`moneykyvsnp` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

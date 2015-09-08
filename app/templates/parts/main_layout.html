@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - Moneyky</title>
+    {% endblock %}
+  </head>
+  <body>
+	  <header>
+	  	<section>
+		  	<div class="logo"><h1><a href="/">Moneyky</a></h1></div>
+			<nav>
+			<ul>
+				<li><a href="/apicall">API Call</a></li>
+				<li><a href="/random-portfolio">Random Portfolio</a></li>
+				<li><a href="/seed">Seed DB</a></li>
+			</ul>
+			</nav>
+		</section>
+	  </header>
+
+    
+  	<div class="main">
+	  	<section>
+	  		{% block content %}{% endblock %}
+	  	</section>
+  	</div>
+
+    <footer>
+	    <section>
+	      {% block footer %}
+	      &copy; Copyright 2015.
+	      {% endblock %}
+	    </section>
+    </footer>
+  </body>
+</html>

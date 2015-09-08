@@ -1,0 +1,45 @@
+{% extends "parts/main_layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+  	<article class="half">
+  	<h3>Moneyky Performance</h3>
+  		
+  		<h3>{{ portfolio.portfolio['performance_ytd'] }}%</h3>
+  		<p>YTD Performance</p>
+
+
+  		<h3>{{ portfolio.portfolio['performance_1year'] }}%</h3>
+  		<p>1 Year Performance</p>
+
+  		<table>
+  		<tr>
+  		<th>Ticker</th><th>Company</th><th>YTD Performance</th><th>1 Year Performance</th>
+  		</tr>
+  		{% for company in portfolio.holdings %}
+  			<tr>
+  				<td>{{company['ticker']}}</td><td>{{company['companyname'] }}</td><td>{{company['ytdperformance']}}%</td><td>{{ company['1yearperformance']}}%</td>
+  			</tr>
+  		{% endfor %}
+  		</table>
+
+  	</article>
+  	<article class="half">
+  		
+  		<h3>S&amp;P Performance</h3>
+  		<h3>{{ portfolio.portfolio['benchmark_ytd'] }}%</h3>
+  		<p>YTD Performance</p>
+
+
+  		<h3>{{ portfolio.portfolio['benchmark_1year'] }}%</h3>
+  		<p>1 Year Performance</p>
+
+  	</article>
+
+ 
+
+
+{% endblock %}

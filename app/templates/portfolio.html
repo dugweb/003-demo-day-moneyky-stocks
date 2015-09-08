@@ -1,0 +1,26 @@
+{% extends "parts/main_layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<article>
+
+	<table>
+	<tr>
+		<th>Ticker</th><th>Name</th><th>Sector</th><td>Google Finance</td>
+	</tr>
+
+	{% for company in portfolio %}
+	<tr>
+		<td>{{company[1]}}</td><td><a href="{{company[15]}}">{{company[2]}}</a></td><td>{{company[3]}}</td><td><a href="https://www.google.com/finance?q={{company[1]}}">Link</a></td>
+	</tr>
+	{% endfor %}
+
+
+	</table>
+
+
+</article>
+
+{% endblock %}

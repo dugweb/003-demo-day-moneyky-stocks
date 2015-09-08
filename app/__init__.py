@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request
+from flask import Flask, render_template, g, request, redirect, url_for
 from moneyky import Moneyky
 
 
@@ -9,6 +9,8 @@ moneyky = Moneyky()
 @app.route("/")
 def hello():
 	portfolio = moneyky.get_portfolio()
+	if not portfolio: 
+		return redirect(url_for('seed'))
 	return render_template('index.html', portfolio = portfolio)
 
 @app.route("/seed")
@@ -35,7 +37,7 @@ def chart():
 	return render_template('chart.html')
 
 @app.route('/company/<ticker>')
-def chart(ticker):
+def company(ticker):
 	#TODO DOUG
 	return render_template('detail.html')
 

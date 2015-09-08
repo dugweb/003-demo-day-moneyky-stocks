@@ -87,7 +87,7 @@ class Moneyky(object):
 		output = self.db.seed_companies("../spx-companies.json")
 		self.portfolio_of_day(5)
 
-		return 
+		return output
 
 	def random_portfolio(self, amount = 10):
 		return self.db.get_random_companies(amount)
@@ -105,8 +105,7 @@ class Moneyky(object):
 		if portfolio:
 			return portfolio
 		else:
-			self.seeddb()
-			self.get_portfolio()
+			return
 
 
 	def chart_results(self):

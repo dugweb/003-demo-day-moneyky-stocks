@@ -1,4 +1,3 @@
-
 from dbactions import MoneykyDB
 from datetime import datetime
 import time
@@ -85,9 +84,12 @@ class Moneyky(object):
 
 	def seeddb(self):
 		''' runs once if there are no companies in the snp_companies file '''
-		return self.db.seed_companies("../spx-companies.json")
+		output = self.db.seed_companies("../spx-companies.json")
+		self.portfolio_of_day(5)
 
-	def random_portfolio(self, amount):
+		return 
+
+	def random_portfolio(self, amount = 10):
 		return self.db.get_random_companies(amount)
 
 	def save(self):
@@ -98,7 +100,18 @@ class Moneyky(object):
 
 
 	def get_portfolio(self):
-		return self.db.get_portfolio()
+		portfolio = self.db.get_portfolio()
+
+		if portfolio:
+			return portfolio
+		else:
+			self.seeddb()
+			self.get_portfolio()
+
+
+	def chart_results(self):
+		portfolios = self.db.get_all_portfolios()
+		#TODO SADASHIV
 
 
 	### ##########################################################

@@ -76,7 +76,11 @@ class MoneykyDB(object):
 			holdingsvalues
 		)
 		self.commit()
-		
+	
+	def get_all_portfolios():
+		#TODO DOUG
+		pass
+
 	def get_portfolio(self):
 		self.cursor.execute(""" 
 				SELECT p.date, p.performance_ytd, p.performance_1year, p.benchmark_ytd, p.benchmark_1year
@@ -85,6 +89,7 @@ class MoneykyDB(object):
 			""")
 
 		portfolio = self.cursor.fetchone()
+
 
 		self.cursor.execute(""" 
 				SELECT 	h.close, h.1yearprice, h.1yearperformance, h.ytdprice, h.ytdperformance, 
@@ -97,6 +102,11 @@ class MoneykyDB(object):
 
 		companies = self.cursor.fetchall()
 		holdings = []
+
+
+		if not portfolio or holdings:
+			return
+			
 		for company in companies:
 			holdings.append({
 				'close'				: company[0],

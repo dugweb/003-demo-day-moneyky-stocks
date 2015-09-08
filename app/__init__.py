@@ -29,5 +29,16 @@ def apicall():
 	return render_template('apicall.html', performance = performance)
 
 
+@app.route('/chart')
+def chart():
+	#TODO SADASHIV
+	return render_template('chart.html')
+
+@app.route('/company/<ticker>')
+def chart(ticker):
+	#TODO DOUG
+	return render_template('detail.html')
+
+
 if __name__ == "__main__":
 	app.run(debug=True)

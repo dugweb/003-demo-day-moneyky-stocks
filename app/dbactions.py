@@ -77,11 +77,27 @@ class MoneykyDB(object):
 		)
 		self.commit()
 	
-	def get_all_portfolios():
-		#TODO DOUG
-		pass
+	def get_all_portfolios(self):
+		''' returns a dictionary of all the portfolios '''
+		self.cursor.execute("""
+			SELECT * FROM """ + self.tables['portfolios'] + """ LIMIT 200
+		""")
 
-	def get_portfolio(self):
+		portfolios = self.cursor.fetchall()
+		result = []
+		for portfolio in portfolios:
+			result.append({
+				'id'				: portfolio[0],
+				'date'				: portfolio[1],
+				'performance_ytd'	: portfolio[2],
+				'performance_1year'	: portfolio[3],
+				'benchmark_ytd'		: portfolio[4],
+				'benchmark_1year'	: portfolio[5]
+			})
+
+		return result
+
+	def get_portfolio_and_companies(self):
 		self.cursor.execute(""" 
 				SELECT p.date, p.performance_ytd, p.performance_1year, p.benchmark_ytd, p.benchmark_1year
 				FROM """ + self.tables['portfolios'] + """ p

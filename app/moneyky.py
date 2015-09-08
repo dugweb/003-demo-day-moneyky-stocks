@@ -100,7 +100,7 @@ class Moneyky(object):
 
 
 	def get_portfolio(self):
-		portfolio = self.db.get_portfolio()
+		portfolio = self.db.get_portfolio_and_companies()
 
 		if portfolio:
 			return portfolio
@@ -111,6 +111,8 @@ class Moneyky(object):
 	def chart_results(self):
 		portfolios = self.db.get_all_portfolios()
 		#TODO SADASHIV
+
+		return portfolios
 
 
 	### ##########################################################

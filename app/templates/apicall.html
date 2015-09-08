@@ -7,12 +7,12 @@
 	<article>
 		<table>
 		<tr>
-			<th>Company ID</th><td>Portfolio ID</td><th>Close</th><th>1 Year Ago</th><th>Year Start</th>
+			<th>Ticker</th><th>Current Price</th><th>YTD Performance</th><th>1 Year Performance</th><th>Updated</th>
 		</tr>
-		{{ performance }}
+
 		{% for stock in performance %}
 		<tr>
-			<td>{{ stock['ticker'] }}</td><td>stock[2]</td><td>stock[3]</td><td>stock[4]</td><td>stock[5]</td>
+			<td>{{ stock['ticker'] }}</td><td>{{ stock['currentprice'] }}</td><td>{{ stock['ytdperformance'] }}%</td><td>{{ stock['1yearperformance'] }}%</td><td>{{ stock['today'] }}</td>
 		</tr>
 		{% endfor %}
 

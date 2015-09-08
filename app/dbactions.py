@@ -19,7 +19,7 @@ class MoneykyDB(object):
 	def get_random_companies(self, amount = 50):
 		''' Return n companies from companies table'''		
 		query = """SELECT * FROM """ +  self.tables['companies'] + """ ORDER BY RAND() LIMIT %s"""
-		self.cursor.execute(query, amount)
+		self.cursor.execute(query, int(amount))
 
 		result = self.cursor.fetchall()
 
@@ -45,10 +45,92 @@ class MoneykyDB(object):
 				data
 		)
 
-		self.db.connection.commit()
+		self.commit()
 
-		return "Successfully Seeded"
+		return "Successfully seeded " + str(len(data)) + " companies."
 
+
+	def set_portfolio(self, portfolio):
+
+		portfoliovalues = (portfolio['date'], portfolio['performance_ytd'], portfolio['performance_1year'], portfolio['benchmark_ytd'], portfolio['benchmark_1year'])
+
+		#insert portfolio
+		self.cursor.execute("""
+				INSERT INTO """ + self.tables['portfolios'] + """ (date, performance_ytd, performance_1year, benchmark_ytd, benchmark_1year)
+				VALUES (%s, %s, %s, %s, %s) """,
+				portfoliovalues
+			)
+		self.commit()
+		
+		#insert holdings
+		self.cursor.execute(""" SELECT LAST_INSERT_ID() """)
+		lastid = self.cursor.fetchone()[0]
+
+		holdingsvalues = []
+		for holding in portfolio['holdings']:
+			holdingsvalues.append((holding['ticker'], lastid, holding['close'], holding['1yearprice'], holding['1yearperformance'], holding['ytdprice'], holding['ytdperformance']))
+
+		self.cursor.executemany("""
+			INSERT INTO """ + self.tables['holdings'] + """ (company_id, portfolio_id, close, 1yearprice, 1yearperformance, ytdprice, ytdperformance)
+			VALUES ((SELECT `id` FROM """ + self.tables['companies'] + """ WHERE `ticker` = %s LIMIT 1), %s, %s, %s, %s, %s, %s)""",
+			holdingsvalues
+		)
+		self.commit()
+		
+	def get_portfolio(self):
+		self.cursor.execute(""" 
+				SELECT p.date, p.performance_ytd, p.performance_1year, p.benchmark_ytd, p.benchmark_1year
+				FROM """ + self.tables['portfolios'] + """ p
+				WHERE p.id = ( SELECT MAX(id) FROM """ + self.tables['portfolios'] + """)
+			""")
+
+		portfolio = self.cursor.fetchone()
+
+		self.cursor.execute(""" 
+				SELECT 	h.close, h.1yearprice, h.1yearperformance, h.ytdprice, h.ytdperformance, 
+						c.ticker, c.companyname, c.sector, c.price_earnings, c.earnings_share, c.market_cap, c.sec_filings
+				FROM """ + self.tables['portfolios'] + """ p
+				JOIN """ + self.tables['holdings'] + """ h ON h.`portfolio_id` = p.id
+				JOIN """ + self.tables['companies'] + """ c ON c.id = h.company_id
+				WHERE p.id = ( SELECT MAX(id) FROM """ + self.tables['portfolios'] + """)
+			""")
+
+		companies = self.cursor.fetchall()
+		holdings = []
+		for company in companies:
+			holdings.append({
+				'close'				: company[0],
+				'1yearprice'		: company[1],
+				'1yearperformance'	: company[2],
+				'ytdprice'			: company[3],
+				'ytdperformance'	: company[4],
+				'ticker'			: company[5],
+				'companyname'		: company[6],
+				'sector'			: company[7],
+				'price_earnings'	: company[8],
+				'earnings_share'	: company[9],
+				'market_cap'		: company[10],
+				'sec_filings'		: company[11],
+				})
+
+		results = {
+			'portfolio' : {
+				'date'				: portfolio[0],
+				'performance_ytd'	: portfolio[1],
+				'performance_1year'	: portfolio[2],
+				'benchmark_ytd'		: portfolio[3],
+				'benchmark_1year'	: portfolio[4]
+			},
+			'holdings'	: holdings
+		}
+
+		return results
+
+	def commit(self):
+		return self.db.connection.commit()		
+
+	### ####################################################
+	### Helper Functions ###
 
 	def table_exists(self, tablename = ""):
 		'''Returns if a table with the supplied name exists'''

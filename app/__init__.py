@@ -8,12 +8,13 @@ moneyky = Moneyky()
 
 @app.route("/")
 def hello():
-	return render_template('index.html')
+	portfolio = moneyky.get_portfolio()
+	return render_template('index.html', portfolio = portfolio)
 
 @app.route("/seed")
 def seed():
-	moneyky.seeddb()
-	return render_template('seed.html')
+	results = moneyky.seeddb()
+	return render_template('seed.html', data = results)
 
 @app.route('/random-portfolio')
 @app.route('/random-portfolio/<amount>')
@@ -23,8 +24,8 @@ def random_portfolio(amount = 5):
 
 @app.route('/apicall')
 def apicall():
-	portfolio = moneyky.random_portfolio(1)
-	performance = moneyky.get_portfolio_performance(portfolio)
+	portfolio = moneyky.random_portfolio(5)
+	performance = moneyky.get_holdings_performance(portfolio)
 	return render_template('apicall.html', performance = performance)
 
 

@@ -1,9 +1,11 @@
 
 from dbactions import MoneykyDB
 from datetime import datetime
+import time
 import requests
 import urllib
 import json
+
 
 class Moneyky(object):
 
@@ -11,138 +13,148 @@ class Moneyky(object):
 	def __init__(self):
 
 		self.db = MoneykyDB()
-		# Connect to the databasee
-		# if snp_companies table is empty then 
-		# seeddb()
-		pass
 
-
-
-
-	def seeddb(self):
-		''' runs once if there are no companies in the snp_companies file '''
-		self.db.seed_companies("../spx-companies.json")
-
-
-	def portfolio_of_day(self):
+	def portfolio_of_day(self, amount = 3, bench = "SPX"):
 		'''This function is the one that will run once per day - Important Function'''
-		portfolio = self.db.get_random_companies(50)
-
-		tickerlist = [stock[1] for stock in portfolio]
-		performance = self.get_portfolio_performance(tickerlist)
+		companies = self.random_portfolio(amount)
 
 		
-
-		return portfolio
-		# get_ticker_performance('^GSPC') # snp performance
-
-		# set_days_performance() 
-		# set_portfolio(holdings)
-
-	def random_portfolio(self, amount):
-		return self.db.get_random_companies(int(amount))
+		holdings = self.get_holdings_performance(companies)
+		benchmark = self.get_ticker_performance(bench, True)
+		output = {
+			'date'				: holdings[0]['today'],
+			'performance_ytd' 	: self.average_performance('ytdperformance', holdings),
+			'performance_1year' : self.average_performance('1yearperformance', holdings),
+			'benchmark_ytd' 	: benchmark['ytdperformance'],
+			'benchmark_1year'	: benchmark['1yearperformance'],
+			'holdings'			: holdings
+		}
 		
-	def get_portfolio_performance(self, holdings = []):
+		self.portfolio = output
+		self.save()
+		return output
+
+		
+	def get_holdings_performance(self, holdings = []):
 		''' creates a list of holdings with their associated performance (Data from http://dev.markitondemand.com) '''	    
+
+		tickerlist = [company[1] for company in holdings]
 
 		data = []
 		
-		for ticker in holdings:
-			data.append(self.get_ticker_performance(ticker[1]))
-		
+		for ticker in tickerlist:
+			data.append(self.get_ticker_performance(ticker))
 
 		return data
 
 
-	def get_ticker_performance(self, ticker):
+	def get_ticker_performance(self, ticker, index = False):
 		''' helper function to get a single stock's performance from Yahoo Finance'''
 		### Construct API Call ###
-		urlbase = "http://dev.markitondemand.com/Api/v2/InteractiveChart/json?parameters="
-		parameters = {
-			   "Normalized":False,
-			   "NumberOfDays":365,
-			   "DataPeriod":"Day",
-			   "Elements":[  
-				  {  
-					 "Symbol":ticker,
-					 "Type":"price",
-					 "Params":[  
-						"c"
-					 ]
-				  }
-			   ]
-			}
-		url = urlbase	
-		url += urllib.quote_plus(json.dumps(parameters))
+		url = "http://www.bloomberg.com/markets/chart/data/1Y/" + ticker
+
+		if index or ticker == 'SPX':
+			url += ":IND"
+		else:
+			url += ":US"
 		
 		response = requests.get(url)
 		result = response.json()
-		
-		### For testing ###
+
+		# For testing
 		# response = open('../sample-historical-data.json', 'r')
-		# result = json.load(response)
+		# result = json.load(response)		
 
-		prices = result['Elements'][0]['DataSeries']['close']['values']
-		ytdindex = self.find_index_of_ytd(result['Dates'])
+		prices = result['data_values']
+		if prices:
+			closingdate = self.timestamp_to_date(prices[-1][0])
+			ytdindex = self.find_index_of_date(prices, closingdate, 'ytd')
+			yearindex = self.find_index_of_date(prices, closingdate, 'year')
+			
+			return {	
+				'ticker'			: ticker,
+				'today'				: self.timestamp_to_date(prices[-1][0], True),
+				'close'				: prices[-1][1],
+				'1year'				: self.timestamp_to_date(prices[yearindex][0], True),
+				'1yearprice'		: prices[yearindex][1],
+				'1yearperformance'	: self.percent_growth(prices[yearindex][1], prices[-1][1]),
+				'ytd'				: self.timestamp_to_date(prices[ytdindex][0], True),
+				'ytdprice'			: prices[ytdindex][1],
+				'ytdperformance'	: self.percent_growth(prices[ytdindex][1], prices[-1][1])
+			}
 
-		return {	
-			'ticker'			: ticker,
-			'today'				: result['Dates'][-1],
-			'currentprice'		: prices[-1],
-			'1year'				: result['Dates'][0],
-			'1yearprice'		: prices[0],
-			'1yearperformance'	: self.percent_growth(prices[0], prices[-1]),
-			'ytd'				: result['Dates'][ytdindex],
-			'ytdprice'			: prices[ytdindex],
-			'ytdperformance'	: self.percent_growth(prices[ytdindex], prices[-1])
-		}
+	def seeddb(self):
+		''' runs once if there are no companies in the snp_companies file '''
+		return self.db.seed_companies("../spx-companies.json")
 
-
-	def set_days_performance(self):
-		''' calculate average of holdings to insert into moneyky vs snp'''
-		# insert holding into DB
-
-		pass
-
-	def set_portfolio_holdings(self, holdings = []):
-		# moneyky_perf = sum(moneyky_stock[2] for moneyky_stock in portfolio_of_today) / float(len(portfolio_of_today))
-		# pprint("^^^^^^^^^^")
-		# pprint(snp_perf) 
-		# pprint(moneyky_perf) 
-		# pprint("^^^^^^^^^^")
-		# for stock in portfolio_of_today: # snp_id:stock[0] , symbol: stock[1][0] , name: stock[1][1] , perf: stock[2]
-		#    moneykyDB.cursor.execute("""INSERT INTO holdings_table (snp_id , Performance) VALUES(%s, %s)""", (stock[0] , stock[2]))
-		#    moneykyDB.connection.commit()
-		pass
-
+	def random_portfolio(self, amount):
+		return self.db.get_random_companies(amount)
 
 	def save(self):
 		''' Save everything to the database after we're happy with it '''
-		# DBActions
-		# Insert portfolio
-		# Insert Holdings
+
+		if (self.portfolio):
+			self.db.set_portfolio(self.portfolio)
 
 
-	def find_index_of_ytd(self, dates = []):
+	def get_portfolio(self):
+		return self.db.get_portfolio()
+
+
+	### ##########################################################
+	### Helper Functions ###
+
+	def find_index_of_date(self, dates = [], closingdate = "", date = 'ytd'):
 		'''The first day of trading isn't always January 1st, so this finds the index first day of trading'''
-		index = 0
-		count = 0
-		while not index:
-			try:
-				index = dates.index(str(datetime.now().year) + '-01-0%sT00:00:00' %count)
-			except ValueError:
-				count += 1
-				continue
+		
+		if not closingdate:
+			closingdate = datetime.now()
 
-		return index
+		Datetofind = None
+		if (date == 'ytd'):
+			Datetofind = datetime(closingdate.year, 1, 1)
+		else:
+			Datetofind = datetime(closingdate.year - 1, closingdate.month, closingdate.day)
+
+		utcDatetofind = self.date_to_timestamp(Datetofind)
+
+		count = 0
+		for time, price in dates:
+				
+			if utcDatetofind <= time:
+				return count
+			count += 1
+
+		return
+
+	def average_performance(self, columnname = '1yearperformance', holdings = [] ):
+		allperformances = [stock[columnname] for stock in holdings]
+		return round(sum(allperformances) / float(len(allperformances)), 2)
 
 	def percent_growth(self, originalprice = 0, currentprice = 0):
+		''' Return the Percent Change '''
 		dif = currentprice - originalprice
-		return dif / originalprice
+		return round((dif / originalprice) * 100, 2)	
+
+	def timestamp_to_date(self, timestamp, string = False):
+		''' timestamps are in milliseconds so divide by 1000 '''
+		time = datetime.fromtimestamp(timestamp/1000)
+
+		if string:
+			return time.strftime("%Y-%m-%d %H:%M:%S")
+
+		return time
+
+	def date_to_timestamp(self, date):
+		''' takes datetime object and returns unix timestamp '''
+		return int(time.mktime(date.timetuple()) * 1000)
 
 
-# judist = Moneyky()
-# r = judist.get_portfolio_performance(['AAPL'])
+#judist = Moneyky()
+#p = judist.portfolio_of_day()
+
+
+# r = judist.get_holdings_performance(['AAPL'])
 # print r
 
-
+# print judist.timestamp_to_date(1441382220000)

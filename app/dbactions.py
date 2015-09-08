@@ -153,7 +153,10 @@ class MoneykyDB(object):
 		return results
 
 	def commit(self):
-		return self.db.connection.commit()		
+		try:
+			self.db.connection.commit()
+		except:
+			self.db.session.rollback()
 
 	### ####################################################
 	### Helper Functions ###

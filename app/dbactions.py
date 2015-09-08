@@ -19,7 +19,7 @@ class MoneykyDB(object):
 	def get_random_companies(self, amount = 50):
 		''' Return n companies from companies table'''		
 		query = """SELECT * FROM """ +  self.tables['companies'] + """ ORDER BY RAND() LIMIT %s"""
-		self.cursor.execute(query, int(amount))
+		self.cursor.execute(query, (amount,) )
 
 		result = self.cursor.fetchall()
 

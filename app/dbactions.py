@@ -81,9 +81,10 @@ class MoneykyDB(object):
 		self.cursor.execute("""
 			SELECT * FROM  """ + self.tables['companies'] + """ c
 			JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
-			WHERE c.ticker = %s
+			WHERE c.ticker LIKE %s
+			ORDER BY c.id
 			LIMIT 1
-		""", (str(ticker),))
+		""", (str("%" + ticker + "%"),))
 
 		results = self.cursor.fetchone()
 		return results

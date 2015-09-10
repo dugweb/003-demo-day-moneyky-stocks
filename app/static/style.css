@@ -1,4 +1,4 @@
-/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/* normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -183,7 +183,7 @@ html {
   background-color: #262626; }
 
 body {
-  color: #333;
+  color: #333333;
   font-family: Helvetica, Arial, Sans-serif;
   font-size: 12px; }
 
@@ -261,7 +261,7 @@ header {
       padding: .5em 1em;
       border: 1px solid; }
       header nav a:link, header nav a:visited {
-        color: #d8d8d8; }
+        color: #d7d7d7; }
       header nav a:hover {
         background-color: #f6f6f6;
         color: #005082; }
@@ -340,13 +340,22 @@ aside {
 .intro {
   font-size: 1.4em;
   line-height: 1.6em;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d7d7d7;
   overflow: auto; }
   .intro h1 {
     line-height: 1.5em; }
   .intro article p:nth-child(3) {
     font-size: .8em;
     line-height: 1.4em; }
+
+.button {
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #005082), color-stop(1, #1d6899));
+  background: -ms-linear-gradient(bottom, #005082, #1d6899);
+  background: -moz-linear-gradient(center bottom, #005082 0%, #1d6899 100%);
+  background: -o-linear-gradient(#1d6899, #005082);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
+  color: #666666;
+  padding: .5em 1em; }
 
 .hero {
   max-width: 100%;
@@ -364,9 +373,9 @@ table {
   table tr {
     min-width: 100%; }
   table tr {
-    border-bottom: 1px solid #d8d8d8; }
+    border-bottom: 1px solid #d7d7d7; }
   table tr:first-child {
-    border-bottom: 1px solid #333; }
+    border-bottom: 1px solid #333333; }
   table th {
     text-align: left;
     font-weight: normal;
@@ -377,7 +386,5 @@ table {
     text-align: right; }
 
 footer {
-  border-top: 1px solid #d8d8d8;
-  color: #d8d8d8; }
-
-/*# sourceMappingURL=style.css.map */
+  border-top: 1px solid #d7d7d7;
+  color: #d7d7d7; }

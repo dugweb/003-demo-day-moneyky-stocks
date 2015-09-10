@@ -14,6 +14,10 @@ def hello():
 		return redirect(url_for('seed'))
 	return render_template('index.html', portfolio = portfolio)
 
+@app.route("/about")
+def about():
+	return render_template('about.html')
+
 @app.route("/seed")
 def seed():
 	results = moneyky.seeddb()

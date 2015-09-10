@@ -15,6 +15,14 @@ $c_bglight: #f6f6f6;
 $c_bgdark: darken($c_bg, 10%);
 $c_bgblack: #262626;
 
+@mixin gradient-bg() {
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #005082), color-stop(1, #1d6899));
+    background: -ms-linear-gradient(bottom, #005082, #1d6899);
+    background: -moz-linear-gradient(center bottom, #005082 0%, #1d6899 100%);
+    background: -o-linear-gradient(#1d6899, #005082);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -69,11 +77,8 @@ section {
 }
 
 header {
-	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #005082), color-stop(1, #1d6899));
-    background: -ms-linear-gradient(bottom, #005082, #1d6899);
-    background: -moz-linear-gradient(center bottom, #005082 0%, #1d6899 100%);
-    background: -o-linear-gradient(#1d6899, #005082);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
+	@include gradient-bg();
+
 	nav {
 		@include make_sm_column(8, $gutter);
 		overflow: auto;
@@ -158,7 +163,13 @@ aside {
 			line-height: 1.4em;
 		}	
 	}
-	
+}
+
+.button {
+	@include gradient-bg();
+	color: $c_bodysoft;
+	padding: .5em 1em;
+
 }
 
 .hero {

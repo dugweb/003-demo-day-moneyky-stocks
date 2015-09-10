@@ -126,11 +126,12 @@ class Moneyky(object):
             moneyky_perf.append(float(each['benchmark_1year']))
             portfolio_perf.append(float(each['performance_1year']))
         TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
-        r = figure(x_axis_type = "datetime", tools=TOOLS)
-        r.line(dates, portfolio_perf, color='#1F78B4', legend='Moneyky portfolio')
-        r.line(dates, moneyky_perf, color='#FB9A99', legend='Benchmark')
+        r = figure(x_axis_type = "datetime", tools=TOOLS, plot_width=800, plot_height=400)
+        r.line(dates, portfolio_perf, legend='Moneyky portfolio', color="firebrick", alpha=0.8, line_width=4)
+        r.line(dates, moneyky_perf,  legend='Benchmark', color="navy", alpha=0.8, line_width=4)
         r.title = "Moneyky vs Benchmark Performance"
-        r.grid.grid_line_alpha=0.3
+
+        r.grid.grid_line_alpha=100
         return (vplot(r))  # return the plot
 
     ### ##########################################################

@@ -354,8 +354,9 @@ aside {
   background: -moz-linear-gradient(center bottom, #005082 0%, #1d6899 100%);
   background: -o-linear-gradient(#1d6899, #005082);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
-  color: #666666;
   padding: .5em 1em; }
+  .button:link, .button:visited {
+    color: #666666; }
 
 .hero {
   max-width: 100%;

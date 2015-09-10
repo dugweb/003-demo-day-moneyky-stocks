@@ -167,8 +167,15 @@ aside {
 
 .button {
 	@include gradient-bg();
-	color: $c_bodysoft;
 	padding: .5em 1em;
+
+	&:link, &:visited {
+		color: $c_bodysoft;
+	}
+
+	&:hover, &:active {
+
+	}
 
 }
 

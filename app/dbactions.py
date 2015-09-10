@@ -83,7 +83,7 @@ class MoneykyDB(object):
 			JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
 			WHERE c.ticker = %s
 			LIMIT 1
-		""", (ticker,))
+		""", (str(ticker),))
 
 		results = self.cursor.fetchone()
 		return results

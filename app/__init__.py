@@ -1,5 +1,6 @@
 from flask import Flask, render_template, g, request, redirect, url_for
 from moneyky import Moneyky
+from bokeh import embed
 
 
 
@@ -33,8 +34,9 @@ def apicall():
 
 @app.route('/chart')
 def chart():
-	#TODO SADASHIV
-	return render_template('chart.html')
+	plot=moneyky.chart_results()
+	script, div = embed.components(plot)
+	return render_template('chart.html', script=script,  div=div)
 
 @app.route('/company/<ticker>')
 def company(ticker):

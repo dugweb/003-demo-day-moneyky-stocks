@@ -1,8 +1,6 @@
 import MySQLdb
 from pprint import pprint
 
-''' reference: http://stackoverflow.com/questions/5687718/how-can-i-insert-data-into-a-mysql-database '''
-
 class Database(object): 
     #Hardcoded for now
     host="127.0.0.1"

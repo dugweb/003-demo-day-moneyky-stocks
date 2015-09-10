@@ -88,7 +88,7 @@ class Moneyky(object):
     def seeddb(self):
         ''' runs once if there are no companies in the snp_companies file '''
         output = self.db.seed_companies("../spx-companies.json")
-        self.portfolio_of_day(5)
+        self.portfolio_of_day(30)
 
         return output
 
@@ -109,6 +109,9 @@ class Moneyky(object):
             return portfolio
         else:
             return
+
+    def get_company(self, ticker):
+        return self.db.get_company_by_ticker(ticker)
 
 
     def chart_results(self):

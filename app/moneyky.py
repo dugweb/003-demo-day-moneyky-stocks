@@ -164,7 +164,7 @@ class Moneyky(object):
         return
 
     def average_performance(self, columnname = '1yearperformance', holdings = [] ):
-        allperformances = [stock[columnname] for stock in holdings if not company == None]
+        allperformances = [stock[columnname] for stock in holdings if not stock == None]
         return round(sum(allperformances) / float(len(allperformances)), 2)
 
     def percent_growth(self, originalprice = 0, currentprice = 0):

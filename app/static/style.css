@@ -356,7 +356,7 @@ aside {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
   padding: .5em 1em; }
   .button:link, .button:visited {
-    color: #666666; }
+    color: #d7d7d7; }
 
 .hero {
   max-width: 100%;

@@ -3,22 +3,24 @@
 @import "bootstrap/stylesheets/bootstrap/_mixins.scss";
 
 $f_body: Helvetica, Arial, Sans-serif;
-$gutter: 20px;
+$gutter: 40px;
 
 $c_body: #333;
-$c_link: #3F72D8;
+$c_bodysoft: lighten($c_body, 20%);
+$c_link: #005082;
 $c_linkhover: darken($c_link, 20%);
 
 $c_bg:#f1f1f1;
-$c_bglight: white;
+$c_bglight: #f6f6f6;
 $c_bgdark: darken($c_bg, 10%);
+$c_bgblack: #262626;
 
 * {
 	box-sizing: border-box;
 }
 
 html {
-	background-color:$c_bg;
+	background-color:$c_bgblack;
 }
 body {
 	color: $c_body;
@@ -32,12 +34,25 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
-h1 { font-size: 2.4em;  }
+h1 { font-size: 2.8em;  }
 h2 { font-size: 1.8em;   }
 h3 { font-size: 1.6em;   }
 h4 { font-size: 1.4em;   }
 h5 { font-size: 1.2em;   }
 h6 { font-size: 1.2em; text-transform: uppercase;   }
+
+
+label, .label {
+	font-size: 1.0em;
+	border-top: 1px solid;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	text-transform: uppercase;
+}
+
+.results {
+	font-size: 2em;
+}
 
 a:link, a:visited {
 	color: $c_link;
@@ -54,7 +69,11 @@ section {
 }
 
 header {
-	border-bottom: 1px solid $c_bgdark;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #005082), color-stop(1, #1d6899));
+    background: -ms-linear-gradient(bottom, #005082, #1d6899);
+    background: -moz-linear-gradient(center bottom, #005082 0%, #1d6899 100%);
+    background: -o-linear-gradient(#1d6899, #005082);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
 	nav {
 		@include make_sm_column(8, $gutter);
 		overflow: auto;
@@ -73,14 +92,24 @@ header {
 		a {
 			padding: .5em 1em;
 			border: 1px solid;
+			&:link, &:visited {
+				color: $c_bgdark;
+			}
+
 			&:hover {
 				background-color: $c_bglight;
+				color: $c_link;
 			}
 		}
 	}
 	.logo {
 		@include make_sm_column(4, $gutter);
-	}
+		a {
+			background: url('https://s3-us-west-2.amazonaws.com/moneyky/moneyky-logo-03.svg') no-repeat;
+			height: 52px;
+			text-indent: -1000em;
+		}
+	}	
 
 	a {
 		text-decoration: none;
@@ -90,9 +119,17 @@ header {
 
 article {
 	@include make_sm_column(8, $gutter);
+	padding-top: 1em;
+	padding-bottom: 1em;
 }
 article.half {
 	@include make_sm_column(6, $gutter);
+}
+article.full {
+	@include make_xs_column(12, $gutter);
+}
+.row {
+	@include make_row($gutter);
 }
 aside {
 	@include make_sm_column(4, $gutter);
@@ -100,26 +137,66 @@ aside {
 
 .main {
 	background-color: $c_bglight;
+
+	section {
+		background: white;
+		padding: 3em 20px;
+	}
+}
+
+.intro {
+	font-size: 1.4em;
+	line-height: 1.6em;
+	border-bottom: 1px solid $c_bgdark;
+	overflow: auto;
+	h1 {
+		line-height: 1.5em;
+	}
+	article {
+		p:nth-child(3) {
+			font-size: .8em;
+			line-height: 1.4em;
+		}	
+	}
+	
+}
+
+.hero {
+	max-width: 100%;
+	position: relative;
+	line-height: 0;
+}
+
+
+.raised {
+	font-size: .7em;
+	position: relative;
+	top: -6px;
 }
 
 table {
 	width: 100%;
-	tr:nth-child(even) {
-		background-color: $c_bg;
+	border-collapse: collapse;
+	tr {
+		min-width: 100%;
+	}
+	tr {
+		border-bottom:1px solid $c_bgdark;
 	}
 	tr:first-child {
-		border-bottom: 1px solid $c_bgdark;
+		border-bottom: 1px solid $c_body;
 	}
-	tr:hover {
-		background-color: lighten($c_linkhover, 60%)
-	}
+	
 	th {
 		text-align: left;
 		font-weight: normal;
-		font-size: 1.4em;
+		font-size: 1.2em;
 	}
 	th, td {
 		padding: .5em;
+	}
+	.numeric {
+		text-align: right;
 	}
 
 }
@@ -127,4 +204,5 @@ table {
 
 footer {
 	border-top: 1px solid $c_bgdark;
+	color: $c_bgdark;
 }

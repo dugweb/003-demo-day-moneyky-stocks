@@ -19,7 +19,7 @@ class MoneykyDB(object):
 	def get_random_companies(self, amount = 50):
 		''' Return n companies from companies table'''		
 		query = """SELECT * FROM """ +  self.tables['companies'] + """ ORDER BY RAND() LIMIT %s"""
-		self.cursor.execute(query, amount )
+		self.cursor.execute(query, (amount,) )
 
 		result = self.cursor.fetchall()
 
@@ -76,6 +76,18 @@ class MoneykyDB(object):
 			holdingsvalues
 		)
 		self.commit()
+
+	def get_company_by_ticker(self, ticker = "AAPL"):
+		self.cursor.execute("""
+			SELECT * FROM  """ + self.tables['companies'] + """ c
+			JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
+			WHERE c.ticker = %s
+			LIMIT 1
+		""", (ticker,))
+
+		results = self.cursor.fetchone()
+		return results
+
 	
 	def get_all_portfolios(self):
 		''' returns a dictionary of all the portfolios '''

@@ -41,7 +41,8 @@ def chart():
 @app.route('/company/<ticker>')
 def company(ticker):
 	#TODO DOUG
-	return render_template('detail.html')
+	company = moneyky.get_company(ticker)
+	return render_template('detail.html', company = company)
 
 
 if __name__ == "__main__":

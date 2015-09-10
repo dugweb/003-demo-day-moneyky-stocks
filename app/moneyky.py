@@ -40,7 +40,7 @@ class Moneyky(object):
     def get_holdings_performance(self, holdings = []):
         ''' creates a list of holdings with their associated performance (Data from http://dev.markitondemand.com) '''	    
 
-        tickerlist = [company[1] for company in holdings]
+        tickerlist = [company[1] for company in holdings if not company == None]
 
         data = []
         
@@ -164,7 +164,7 @@ class Moneyky(object):
         return
 
     def average_performance(self, columnname = '1yearperformance', holdings = [] ):
-        allperformances = [stock[columnname] for stock in holdings]
+        allperformances = [stock[columnname] for stock in holdings if not company == None]
         return round(sum(allperformances) / float(len(allperformances)), 2)
 
     def percent_growth(self, originalprice = 0, currentprice = 0):

@@ -1,6 +1,7 @@
 import MySQLdb
 from dbconnect import Database as DB
 import json
+import datetime
 
 class MoneykyDB(object):
 
@@ -80,11 +81,11 @@ class MoneykyDB(object):
 	def get_company_by_ticker(self, ticker = "AAPL"):
 		self.cursor.execute("""
 			SELECT * FROM  """ + self.tables['companies'] + """ c
-			JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
-			WHERE c.ticker LIKE %s
+			LEFT JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
+			WHERE c.ticker = %s
 			ORDER BY c.id
 			LIMIT 1
-		""", (str("%" + ticker + "%"),))
+		""", (str(ticker),))
 
 		results = self.cursor.fetchone()
 		return results
@@ -99,16 +100,44 @@ class MoneykyDB(object):
 		portfolios = self.cursor.fetchall()
 		result = []
 		for portfolio in portfolios:
-			result.append({
+			perf = {
 				'id'				: portfolio[0],
 				'date'				: portfolio[1],
 				'performance_ytd'	: portfolio[2],
 				'performance_1year'	: portfolio[3],
 				'benchmark_ytd'		: portfolio[4],
-				'benchmark_1year'	: portfolio[5]
-			})
+				'benchmark_1year'	: portfolio[5],
+			}
+			perf['difference_ytd'] = perf['performance_ytd'] - perf['benchmark_ytd']
+			perf['result_ytd'] = self.outperform(perf['difference_ytd'])
+			perf['difference_1year'] = perf['performance_1year'] - perf['benchmark_1year']
+			perf['result_1year'] = self.outperform(perf['difference_1year'])
+
+			result.append(perf)
 
 		return result
+
+	def get_portfolio_by_day(self, date = None):
+		if not date:
+			date = datetime.date.today()
+
+		self.cursor.execute("""
+			SELECT * FROM """ + self.tables['portfolios'] + """
+			WHERE date = %s
+		""", (date,))
+		result = self.cursor.fetchone()
+
+		return result
+
+
+
+	def outperform(self, difference):
+		if difference > 0:
+			return "outperform"
+		elif difference == 0:
+			return "inline"
+		else:
+			return "underperform"
 
 	def get_portfolio_and_companies(self):
 		self.cursor.execute(""" 
@@ -157,11 +186,16 @@ class MoneykyDB(object):
 				'date'				: portfolio[0],
 				'performance_ytd'	: portfolio[1],
 				'performance_1year'	: portfolio[2],
+				'difference_ytd'	: portfolio[1] - portfolio[3],
+				'difference_1year'	: portfolio[2] - portfolio[4],
 				'benchmark_ytd'		: portfolio[3],
 				'benchmark_1year'	: portfolio[4]
 			},
 			'holdings'	: holdings
 		}
+
+		results['portfolio']['result_ytd'] = self.outperform(results['portfolio']['difference_ytd'])
+		results['portfolio']['result_1year'] = self.outperform(results['portfolio']['difference_1year'])
 
 		return results
 

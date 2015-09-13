@@ -31,10 +31,15 @@
   <div class="row">
     <article class="full">
     <h2>Today's Results</h2>
+     {% if portfolio.portfolio['difference_ytd'] + portfolio.portfolio['difference_1year'] > 0 %}
+     <h3>The Monkey Portfolio <span class="outperform">Outperformed</span> the S&amp;P</h3>
+     {% else %}
+     <h3>The Monkey Portfolio <span class="underperform">Underperformed</span> the S&amp;P</h3>
+     {% endif %}
     </article>
   </div>
   <div class="row">
-  	<article class="half">
+  	<article class="third">
   	<h3 class="label">Monkey Performance</h3>
   		
   		<h3 class="results">{{ portfolio.portfolio['performance_ytd'] }}%</h3>
@@ -45,7 +50,7 @@
   		<p>1 Year Performance</p>
 
   	</article>
-  	<article class="half">
+  	<article class="third">
   		
   		<h3 class="label">S&amp;P Performance</h3>
   		<h3 class="results">{{ portfolio.portfolio['benchmark_ytd'] }}%</h3>
@@ -56,6 +61,18 @@
   		<p>1 Year Performance</p>
 
   	</article>
+    <article class="third">
+      <h3 class="label">Difference</h3>
+      <h3 class="results {{ portfolio.portfolio['result_ytd']}}">{{ portfolio.portfolio['difference_ytd'] }}%</h3>
+      <p>YTD Performance</p>
+
+
+      <h3 class="results {{ portfolio.portfolio['result_1year']}}">{{ portfolio.portfolio['difference_1year'] }}%</h3>
+      <p>1 Year Performance</p>
+
+
+    </article>
+
   </div>
   <div class="row">
     <article class="full">
@@ -67,8 +84,8 @@
       <th>Ticker</th><th>Company</th><th class="numeric">YTD Performance</th><th class="numeric">1 Year Performance</th>
       </tr>
       {% for company in portfolio.holdings %}
-        <tr>
-          <td><a href="/company/{{company['ticker']}}">{{company['ticker']}}</a></td><td>{{company['companyname'] }}</td><td class="numeric">{{company['ytdperformance']}}%</td><td class="numeric">{{ company['1yearperformance']}}%</td>
+        <tr data-url="/company/{{ company['ticker'] }}">
+          <td>{{company['ticker']}}</td><td>{{company['companyname'] }}</td><td class="numeric">{{company['ytdperformance']}}%</td><td class="numeric">{{ company['1yearperformance']}}%</td>
         </tr>
       {% endfor %}
       </table>

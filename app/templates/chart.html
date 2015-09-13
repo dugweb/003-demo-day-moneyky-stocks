@@ -1,19 +1,76 @@
 {% extends "parts/main_layout.html" %}
 
-{% block title %}Home{% endblock %}
+{% block head %}
+
+  <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.9.1.min.css" type="text/css" />
+  <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.9.1.min.js"></script>
+
+{% endblock %}
+
+{% block title %}Moneyky vs Benchmark{% endblock %}
 
 {% block content %}
-<article>
-    <head>
-        <meta charset="utf-8">
-        <title>Moneyky vs Benchmark</title>
-        <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.9.1.min.css" type="text/css" />
-        <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.9.1.min.js"></script>
-  </head>
-  <body>
+
+<div class="row">
+<article class="full">
       {{ div | safe }}
       {{ script | safe }}
-  </body>
 </article>
+</div>
+
+<div class="row">
+<article class="full">
+
+<h2>Monkey Averages</h2>
+<p>On average this is how the Moneky's stock picks perform relative to the benchmark</p>
+<p>Green and red numbers are all relative to the benchmark.</p>  
+</article>
+</div>
+
+<div class="row">
+<article class="half">
+
+
+<h3 class="label">Average YTD Performance</h3>
+  <h3 class="results {{ overview['results_ytd'] }}">{{ overview['ytd'] }}</h3>
+
+
+</article>
+<article class="half">
+<h3 class="label">Average 1 Year Performance</h3>
+  <h3 class="results {{ overview['results_1year'] }}">{{ overview['1year'] }}</h3>
+
+</article>
+</div>
+<div class="row">
+<article class="full">
+<h2>Past Portfolio Results</h2>
+<table>
+
+  <tr>
+    <th>Date</th>
+    <th class="numeric">YTD</th>
+    <th class="numeric">SPX YTD</th>
+    <th class="numeric">Difference YTD</th>
+    <th class="numeric">1 Year</th>
+    <th class="numeric">SPX 1 Year</th>
+    <th class="numeric">Difference 1 Year</th>
+
+  </tr>
+  {% for day in portfolios %}
+    <tr>
+      <td>{{ day['date'] }}</td>
+      <td class="numeric">{{ day['performance_ytd'] }}%</td>
+      <td class="numeric">{{ day['benchmark_ytd'] }}%</td>
+      <td class="numeric {{ day['result_ytd'] }}">{{ day['difference_ytd'] }}%</td>      
+      <td class="numeric">{{ day['performance_1year'] }}%</td>
+      <td class="numeric">{{ day['benchmark_1year'] }}%</td>
+      <td class="numeric {{ day['result_1year'] }}">{{ day['difference_1year'] }}%</td>      
+    </tr>
+  {% endfor %}
+</table>
+</article>
+</div>
+
 
 {% endblock %}

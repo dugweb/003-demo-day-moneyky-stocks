@@ -1,4 +1,4 @@
-/* normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -183,7 +183,7 @@ html {
   background-color: #262626; }
 
 body {
-  color: #333333;
+  color: #333;
   font-family: Helvetica, Arial, Sans-serif;
   font-size: 12px; }
 
@@ -261,7 +261,7 @@ header {
       padding: .5em 1em;
       border: 1px solid; }
       header nav a:link, header nav a:visited {
-        color: #d7d7d7; }
+        color: #d8d8d8; }
       header nav a:hover {
         background-color: #f6f6f6;
         color: #005082; }
@@ -312,6 +312,16 @@ article.full {
   padding-left: 20px;
   padding-right: 20px; }
 
+article.third {
+  position: relative;
+  min-height: 1px;
+  padding-left: 20px;
+  padding-right: 20px; }
+  @media (min-width: 768px) {
+    article.third {
+      float: left;
+      width: 33.33333%; } }
+
 .row {
   margin-left: -20px;
   margin-right: -20px; }
@@ -340,7 +350,7 @@ aside {
 .intro {
   font-size: 1.4em;
   line-height: 1.6em;
-  border-bottom: 1px solid #d7d7d7;
+  border-bottom: 1px solid #d8d8d8;
   overflow: auto; }
   .intro h1 {
     line-height: 1.5em; }
@@ -356,7 +366,7 @@ aside {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1d6899', endColorstr='#005082', GradientType=0);
   padding: .5em 1em; }
   .button:link, .button:visited {
-    color: #d7d7d7; }
+    color: #d8d8d8; }
 
 .hero {
   max-width: 100%;
@@ -368,15 +378,24 @@ aside {
   position: relative;
   top: -6px; }
 
+.outperform {
+  color: green; }
+
+.underperform {
+  color: red; }
+
 table {
   width: 100%;
   border-collapse: collapse; }
   table tr {
     min-width: 100%; }
   table tr {
-    border-bottom: 1px solid #d7d7d7; }
+    border-bottom: 1px solid #d8d8d8; }
   table tr:first-child {
-    border-bottom: 1px solid #333333; }
+    border-bottom: 1px solid #333; }
+  table [data-url]:hover {
+    background-color: #b5e3ff;
+    cursor: pointer; }
   table th {
     text-align: left;
     font-weight: normal;
@@ -387,5 +406,7 @@ table {
     text-align: right; }
 
 footer {
-  border-top: 1px solid #d7d7d7;
-  color: #d7d7d7; }
+  border-top: 1px solid #d8d8d8;
+  color: #d8d8d8; }
+
+/*# sourceMappingURL=style.css.map */

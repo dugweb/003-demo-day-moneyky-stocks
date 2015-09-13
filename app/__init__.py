@@ -38,9 +38,11 @@ def apicall():
 
 @app.route('/chart')
 def chart():
-	plot=moneyky.chart_results()
+	plot, portfolio_results = moneyky.chart_results()
+	portfolios = portfolio_results['portfolios']
+	overview = portfolio_results['overview']
 	script, div = embed.components(plot)
-	return render_template('chart.html', script=script,  div=div)
+	return render_template('chart.html', script=script,  div=div, portfolios = portfolios, overview = overview)
 
 @app.route('/company/<ticker>')
 def company(ticker):

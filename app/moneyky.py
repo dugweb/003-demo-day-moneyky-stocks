@@ -94,7 +94,7 @@ class Moneyky(object):
     def seeddb(self, amount = 30):
         ''' runs once if there are no companies in the snp_companies file '''
         output = self.db.seed_companies("/var/www/moneyky/spx-companies.json")
-        output += self.portfolio_of_day(amount)
+       # output += self.portfolio_of_day(amount)
         return output
 
 

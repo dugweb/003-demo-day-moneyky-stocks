@@ -32,7 +32,7 @@ class MoneykyDB(object):
 		jsondata = json.load(rawjson)
 		data = []
 
-		if (self.table_has_data('spx_companies')):
+		if (self.table_has_data( self.tables['companies'] )):
 			return "Table already has data."
 
 		for row in jsondata:
@@ -162,7 +162,7 @@ class MoneykyDB(object):
 	### Helper Functions ###
 
 	def table_exists(self, tablename = ""):
-		'''Returns if a table with the supplied name exists'''
+		''' Returns if a table with the supplied name exists'''
 		self.cursor.execute("SHOW TABLES LIKE %s", ("%" + tablename + "%",))
 		result = self.cursor.fetchone()
 		if result:
@@ -171,7 +171,7 @@ class MoneykyDB(object):
 		return False
 
 	def table_has_data(self, tablename = ""):
-		'''Tells you if the table has any data already in there'''
+		''' Tells you if the table has any data already in there'''
 		result = False
 
 		if self.table_exists(tablename):

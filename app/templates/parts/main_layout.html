@@ -3,6 +3,8 @@
   <head>
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+	<link rel="icon" href="https://s3-us-west-2.amazonaws.com/moneyky/moneyky-favicon.png" type="image/x-icon">
     <title>{% block title %}{% endblock %} - Moneyky</title>
     {% endblock %}
   </head>

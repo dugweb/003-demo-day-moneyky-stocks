@@ -17,7 +17,7 @@ class Moneyky(object):
         self.db = MoneykyDB()
 
 
-    def portfolio_of_day(self, amount = 3, bench = "SPX"):
+    def portfolio_of_day(self, amount = 30, bench = "SPX"):
         '''This function is the one that will run once per day - Important Function'''
         
         if self.db.get_portfolio_by_day():

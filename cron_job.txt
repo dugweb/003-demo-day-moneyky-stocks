@@ -1,0 +1,1 @@
+0 17 * * 1-5 python $MONEYKY_PATH/run_daily.py 1 >> ~/run_daily_output.log 2 >> ~/run_daily_err.log #Run at 5.00pm every day of week except Sun, Sat

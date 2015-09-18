@@ -1,2 +1,3 @@
 app/venv/*
 app/static/bootstrap/*
+app/static/.sass-cache/*

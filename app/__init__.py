@@ -1,5 +1,6 @@
 from flask import Flask, render_template, g, request, redirect, url_for
 from moneyky import Moneyky
+from bokeh import embed
 
 
 
@@ -12,6 +13,10 @@ def hello():
 	if not portfolio: 
 		return redirect(url_for('seed'))
 	return render_template('index.html', portfolio = portfolio)
+
+@app.route("/about")
+def about():
+	return render_template('about.html')
 
 @app.route("/seed")
 def seed():
@@ -33,13 +38,17 @@ def apicall():
 
 @app.route('/chart')
 def chart():
-	#TODO SADASHIV
-	return render_template('chart.html')
+	plot, portfolio_results = moneyky.chart_results()
+	portfolios = portfolio_results['portfolios']
+	overview = portfolio_results['overview']
+	script, div = embed.components(plot)
+	return render_template('chart.html', script=script,  div=div, portfolios = portfolios, overview = overview)
 
 @app.route('/company/<ticker>')
 def company(ticker):
 	#TODO DOUG
-	return render_template('detail.html')
+	company = moneyky.get_company(ticker)
+	return render_template('detail.html', company = company)
 
 
 if __name__ == "__main__":

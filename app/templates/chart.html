@@ -58,7 +58,7 @@
 
   </tr>
   {% for day in portfolios %}
-    <tr>
+    <tr data-url="/portfolio/{{ day['date'] }}">
       <td>{{ day['date'] }}</td>
       <td class="numeric">{{ day['performance_ytd'] }}%</td>
       <td class="numeric">{{ day['benchmark_ytd'] }}%</td>

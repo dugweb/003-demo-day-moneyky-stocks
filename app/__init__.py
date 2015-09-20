@@ -38,17 +38,26 @@ def apicall():
 
 @app.route('/chart')
 def chart():
+	''' Past portfolios, and charted results of their performance '''
 	plot, portfolio_results = moneyky.chart_results()
 	portfolios = portfolio_results['portfolios']
 	overview = portfolio_results['overview']
 	script, div = embed.components(plot)
 	return render_template('chart.html', script=script,  div=div, portfolios = portfolios, overview = overview)
 
+
 @app.route('/company/<ticker>')
 def company(ticker):
+	''' Detail page for company '''
 	#TODO DOUG
 	company = moneyky.get_company(ticker)
 	return render_template('detail.html', company = company)
+
+@app.route('/portfolio/<date>')
+def portfolio(date):
+	''' Get the holdings from a past portfolio '''
+	portfolio = moneyky.get_portfolio(date)
+	return render_template('past_portfolio.html', portfolio = portfolio)
 
 
 if __name__ == "__main__":

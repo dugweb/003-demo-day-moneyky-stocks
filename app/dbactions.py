@@ -117,37 +117,42 @@ class MoneykyDB(object):
 
 		return result
 
-	def get_portfolio_by_day(self, date = None):
+	def get_portfolio(self, date = None, portfolio_id = None):
+		''' get a portfolio by the date, but if not date then the portfolio_id, if neither then the most recent'''
+
+		compare_key = 'date'
+		compare_value = date
+
 		if not date:
-			date = datetime.date.today()
+			compare_key = 'id'
+			if not portfolio_id:
+				portfolio_id = self.get_latest_id(self.tables['portfolios'])
+			compare_value = portfolio_id
 
 		self.cursor.execute("""
-			SELECT * FROM """ + self.tables['portfolios'] + """
-			WHERE date = %s
-		""", (date,))
-		result = self.cursor.fetchone()
+			SELECT p.date, p.performance_ytd, p.performance_1year, p.benchmark_ytd, p.benchmark_1year, p.id
+			FROM """ + self.tables['portfolios'] + """ p
+			WHERE p.""" + compare_key + """ = %s
+		""", (compare_value,))
+		portfolio = self.cursor.fetchone()
+
+		result = {
+				'date'				: portfolio[0],
+				'performance_ytd'	: portfolio[1],
+				'performance_1year'	: portfolio[2],
+				'difference_ytd'	: portfolio[1] - portfolio[3],
+				'difference_1year'	: portfolio[2] - portfolio[4],
+				'benchmark_ytd'		: portfolio[3],
+				'benchmark_1year'	: portfolio[4],
+				'id'				: portfolio[5]
+		}
 
 		return result
 
+	def get_portfolio_holdings(self, portfolio_id = None):
 
-
-	def outperform(self, difference):
-		if difference > 0:
-			return "outperform"
-		elif difference == 0:
-			return "inline"
-		else:
-			return "underperform"
-
-	def get_portfolio_and_companies(self):
-		self.cursor.execute(""" 
-				SELECT p.date, p.performance_ytd, p.performance_1year, p.benchmark_ytd, p.benchmark_1year
-				FROM """ + self.tables['portfolios'] + """ p
-				WHERE p.id = ( SELECT MAX(id) FROM """ + self.tables['portfolios'] + """)
-			""")
-
-		portfolio = self.cursor.fetchone()
-
+		if not portfolio_id:
+			portfolio_id = self.get_latest_id(self.tables['portfolios'])
 
 		self.cursor.execute(""" 
 				SELECT 	h.close, h.1yearprice, h.1yearperformance, h.ytdprice, h.ytdperformance, 
@@ -155,16 +160,12 @@ class MoneykyDB(object):
 				FROM """ + self.tables['portfolios'] + """ p
 				JOIN """ + self.tables['holdings'] + """ h ON h.`portfolio_id` = p.id
 				JOIN """ + self.tables['companies'] + """ c ON c.id = h.company_id
-				WHERE p.id = ( SELECT MAX(id) FROM """ + self.tables['portfolios'] + """)
-			""")
+				WHERE p.id = %s 
+		""", (portfolio_id,))
 
 		companies = self.cursor.fetchall()
 		holdings = []
 
-
-		if not portfolio or holdings:
-			return
-			
 		for company in companies:
 			holdings.append({
 				'close'				: company[0],
@@ -179,20 +180,34 @@ class MoneykyDB(object):
 				'earnings_share'	: company[9],
 				'market_cap'		: company[10],
 				'sec_filings'		: company[11],
-				})
+			})
 
+		return holdings
+
+
+
+	def outperform(self, difference):
+		if difference > 0:
+			return "outperform"
+		elif difference == 0:
+			return "inline"
+		else:
+			return "underperform"
+
+	def get_portfolio_and_companies(self, date = None):
+
+		portfolio = self.get_portfolio(date)
+		holdings = self.get_portfolio_holdings(portfolio['id'])
+
+
+		if not portfolio or not holdings:
+			return "judist priest, is this returning?"
+			
 		results = {
-			'portfolio' : {
-				'date'				: portfolio[0],
-				'performance_ytd'	: portfolio[1],
-				'performance_1year'	: portfolio[2],
-				'difference_ytd'	: portfolio[1] - portfolio[3],
-				'difference_1year'	: portfolio[2] - portfolio[4],
-				'benchmark_ytd'		: portfolio[3],
-				'benchmark_1year'	: portfolio[4]
-			},
+			'portfolio' : portfolio,
 			'holdings'	: holdings
 		}
+		
 
 		results['portfolio']['result_ytd'] = self.outperform(results['portfolio']['difference_ytd'])
 		results['portfolio']['result_1year'] = self.outperform(results['portfolio']['difference_1year'])
@@ -207,6 +222,10 @@ class MoneykyDB(object):
 
 	### ####################################################
 	### Helper Functions ###
+
+	def get_latest_id(self, tablename):
+		self.cursor.execute("""SELECT MAX(id) FROM """ + tablename)
+		return self.cursor.fetchone()[0]
 
 	def table_exists(self, tablename = ""):
 		''' Returns if a table with the supplied name exists'''
@@ -226,3 +245,7 @@ class MoneykyDB(object):
 			result = self.cursor.rowcount
 
 		return result
+
+
+# d = MoneykyDB()
+# print d.get_portfolio_and_companies()

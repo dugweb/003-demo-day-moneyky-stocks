@@ -20,9 +20,7 @@ class Moneyky(object):
     def portfolio_of_day(self, amount = 30, bench = "SPX"):
         '''This function is the one that will run once per day - Important Function'''
         
-        if self.db.get_portfolio_by_day():
-            return "Already recorded performance today"
-
+      
 
         companies = self.random_portfolio(amount)
 
@@ -30,7 +28,7 @@ class Moneyky(object):
         holdings = self.get_holdings_performance(companies)
         benchmark = self.get_ticker_performance(bench, True)
         output = {
-            'date'				: date.today(),
+            'date'				: holdings[0]['today'],
             'performance_ytd' 	: self.average_performance('ytdperformance', holdings),
             'performance_1year' : self.average_performance('1yearperformance', holdings),
             'benchmark_ytd' 	: benchmark['ytdperformance'],
@@ -109,8 +107,8 @@ class Moneyky(object):
             self.db.set_portfolio(self.portfolio)
 
 
-    def get_portfolio(self):
-        portfolio = self.db.get_portfolio_and_companies()
+    def get_portfolio(self, date = None):
+        portfolio = self.db.get_portfolio_and_companies(date)
 
         if portfolio:
             return portfolio

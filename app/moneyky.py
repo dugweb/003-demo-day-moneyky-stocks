@@ -107,8 +107,8 @@ class Moneyky(object):
             self.db.set_portfolio(self.portfolio)
 
 
-    def get_portfolio(self, date = None):
-        portfolio = self.db.get_portfolio_and_companies(date)
+    def get_portfolio(self, id = None):
+        portfolio = self.db.get_portfolio_and_companies(id)
 
         if portfolio:
             return portfolio
@@ -145,7 +145,7 @@ class Moneyky(object):
             dates.append(each['date'])
             moneyky_perf.append(float(each['difference_ytd']))
             portfolio_perf.append(float(each['difference_1year']))
-        TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
+        TOOLS = "reset,save"
         r = figure(x_axis_type = "datetime", tools=TOOLS, plot_width=800, plot_height=400)
         r.line(dates, portfolio_perf, legend='Monkey ytd', color="firebrick", alpha=0.8, line_width=4)
         r.line(dates, moneyky_perf,  legend='Monkey 1 Year', color="navy", alpha=0.8, line_width=4)

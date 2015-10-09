@@ -53,10 +53,10 @@ def company(ticker):
 	company = moneyky.get_company(ticker)
 	return render_template('detail.html', company = company)
 
-@app.route('/portfolio/<date>')
-def portfolio(date):
+@app.route('/portfolio/<id>')
+def portfolio(id):
 	''' Get the holdings from a past portfolio '''
-	portfolio = moneyky.get_portfolio(date)
+	portfolio = moneyky.get_portfolio(id)
 	return render_template('past_portfolio.html', portfolio = portfolio)
 
 

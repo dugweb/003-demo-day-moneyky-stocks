@@ -80,15 +80,36 @@ class MoneykyDB(object):
 
 	def get_company_by_ticker(self, ticker = "AAPL"):
 		self.cursor.execute("""
-			SELECT * FROM  """ + self.tables['companies'] + """ c
+			SELECT c.id, c.ticker, c.companyname, c.sector, h.close, c.sec_filings, h.1yearprice, h.1yearperformance, h.ytdprice, h.ytdperformance, p.date
+			FROM  """ + self.tables['companies'] + """ c
 			LEFT JOIN """ + self.tables['holdings'] + """ h ON h.company_id = c.id
+			LEFT JOIN """ + self.tables['portfolios'] + """ p ON p.id = h.portfolio_id
 			WHERE c.ticker = %s
 			ORDER BY c.id
 			LIMIT 1
 		""", (str(ticker),))
 
 		results = self.cursor.fetchone()
-		return results
+
+		result = {
+				'id'				: results[0],
+				'ticker'			: results[1],
+				'name'				: results[2],
+				'sector'			: results[3],
+				'price'				: results[4],
+				'seclink'			: results[5],
+				'1yearprice'		: results[6],
+				'1yearperformance'	: results[7],
+				'ytdprice'			: results[8],
+				'ytdperformance'	: results[9],
+				'date'				: results[10]
+		}
+
+		result['result_ytd'] = self.outperform(result['ytdperformance'])
+		result['result_1year'] = self.outperform(result['1yearperformance'])
+
+
+		return result
 
 	
 	def get_all_portfolios(self):
@@ -194,9 +215,9 @@ class MoneykyDB(object):
 		else:
 			return "underperform"
 
-	def get_portfolio_and_companies(self, date = None):
+	def get_portfolio_and_companies(self, id = None):
 
-		portfolio = self.get_portfolio(date)
+		portfolio = self.get_portfolio(portfolio_id = id)
 		holdings = self.get_portfolio_holdings(portfolio['id'])
 
 

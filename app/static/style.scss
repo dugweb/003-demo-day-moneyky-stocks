@@ -240,6 +240,11 @@ table {
 }
 
 
+/* Chart stuff */
+.bk-plot-canvas-wrapper {
+	pointer-events: none;
+}
+
 
 footer {
 	border-top: 1px solid $c_bgdark;

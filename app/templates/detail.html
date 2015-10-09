@@ -4,13 +4,50 @@
 
 {% block content %}
 
+<div class="row">
+	<article class="full">
+		<h1>{{ company['name'] }} (<smaller>{{ company['ticker'] }})</smaller></h1>
+		<h3 class="label">Sector: {{ company['sector'] }}</h3>
+		<p>These numbers are a snapshot in time when the company was included in the Monkey portfolio. The numbers below are likely out of date.</p>
+		<p class="label">Price</p>
+		<h3 class="results">{{ company['price'] }}</h3>
+		<p>as of {{company['date'] }}</p>
+		
+	</article>
+</div>
 
-<h1>{{ company[2] }}</h1>
-<h3 class="label">{{ company[3] }}</h3>
+
+<div class="row">
+
+<article class="third">
+	<h3 class="label">YTD Performance</h3>
+	<h3 class="results {{ company['result_1year']}}">{{ company['ytdperformance'] }}%</h3>
+	<p>as of {{company['date'] }}</p>
+
+</article>
+
+<article class="third">
+	<h3 class="label">One Year Performance</h3>
+	<h3 class="results {{ company['result_1year']}}">{{ company['1yearperformance'] }}%</h3>
+	<p>as of {{company['date'] }}</p>
 
 
+</article>
 
-{{ company }}
+<article class="third">
+
+<h3 class="label">Other Information</h3>
+
+<ul>
+<li><a href="https://www.google.com/finance?q={{company['ticker']}}">Google Finance</a></li>
+
+<li><a href="{{ company['seclink'] }}">SEC Filings</a></li>
+
+</ul>
+
+</article>
+
+</div>
 
 
 

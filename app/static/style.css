@@ -405,6 +405,10 @@ table {
   table .numeric {
     text-align: right; }
 
+/* Chart stuff */
+.bk-plot-canvas-wrapper {
+  pointer-events: none; }
+
 footer {
   border-top: 1px solid #d8d8d8;
   color: #d8d8d8; }

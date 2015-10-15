@@ -63,9 +63,9 @@ class MoneykyDB(object):
 			)
 		self.commit()
 		
-		#insert holdings
-		self.cursor.execute(""" SELECT LAST_INSERT_ID() """)
-		lastid = self.cursor.fetchone()[0]
+		# insert holdings
+		# self.cursor.execute(""" SELECT LAST_INSERT_ID() """)
+		lastid = self.cursor.lastrowid
 
 		holdingsvalues = []
 		for holding in portfolio['holdings']:

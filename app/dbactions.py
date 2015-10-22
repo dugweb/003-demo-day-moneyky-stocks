@@ -221,8 +221,7 @@ class MoneykyDB(object):
 		holdings = self.get_portfolio_holdings(portfolio['id'])
 
 
-		if not portfolio or not holdings:
-			return "judist priest, is this returning?"
+	
 			
 		results = {
 			'portfolio' : portfolio,
